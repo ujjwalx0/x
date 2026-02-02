@@ -14,7 +14,6 @@ html,body{margin:0;padding:0}
   --card:#151527;
   --primary:#ff5fa2;
   --secondary:#ff9bd5;
-  --text:#ffffff;
   --soft:#ffd9ec;
 }
 
@@ -28,14 +27,13 @@ body{
     radial-gradient(70% 50% at 15% 10%, #ff5fa255, transparent),
     radial-gradient(60% 50% at 85% 90%, #ff9bd555, transparent),
     var(--bg);
-  color:var(--text);
+  color:#fff;
   padding:14px;
-  overflow:hidden;
 }
 
 .card{
   width:100%;
-  max-width:380px;
+  max-width:390px;
   background:linear-gradient(180deg,#1a1a33,#111125);
   border-radius:30px;
   padding:26px 22px 28px;
@@ -44,10 +42,10 @@ body{
 }
 
 /* TEXT */
-h1{margin:0 0 6px;font-size:30px;color:var(--primary)}
+h1{margin:0;font-size:30px;color:var(--primary)}
 .emojis{font-size:24px;margin:10px 0}
 p{font-size:15.6px;line-height:1.65;color:var(--soft)}
-.question{font-size:19px;font-weight:600}
+.question{font-size:19px;font-weight:600;margin:8px 0}
 .hint{font-size:13.4px;color:#ffc0dd;margin-bottom:16px}
 
 /* BUTTONS */
@@ -67,9 +65,8 @@ button{
   font-weight:600;
 }
 
-/* NO — SMALLER + CRAZY FAST */
 #no{
-  flex:.6;
+  flex:.55;
   font-size:13px;
   background:#1f1f3f;
   color:#fff;
@@ -91,7 +88,7 @@ textarea{
   font-size:14px;
 }
 .save-btn{
-  margin-top:12px;
+  margin-top:14px;
   width:100%;
   padding:12px;
   border:none;
@@ -100,6 +97,11 @@ textarea{
   color:#2a0014;
   font-weight:600;
 }
+.gif{
+  width:100%;
+  border-radius:18px;
+  margin-top:16px;
+}
 </style>
 </head>
 
@@ -107,15 +109,17 @@ textarea{
 
 <div class="card" id="card">
   <h1 id="name"></h1>
-  <div class="emojis">💖 💋 🤍 💫</div>
+  <div class="emojis">💖 🤍 💫</div>
   <p id="intro"></p>
 
   <div class="question">
-    I don’t like you casually.<br>I like you intentionally.
+    I don’t feel this way about everyone.<br>
+    I feel it about you.
   </div>
 
   <div class="hint">
-    If you feel it too, choose yes.<br>If not, choose no.
+    If you feel the same, choose yes.<br>
+    If not, choose no.
   </div>
 
   <div class="btns">
@@ -123,53 +127,34 @@ textarea{
     <button id="no">No</button>
   </div>
 
-  <div class="small">Honest feelings only.</div>
+  <div class="small">Take your time. Be honest.</div>
 </div>
 
 <script>
-/* ---------------- CONFIG ---------------- */
-const BIN_ID = "69809848ae596e708f0b60cd";
-const API_KEY = "$2a$10$SWRs0c4zsOCWZY5mPavGI.CFoLPsZilAUB1XKFEUU7r0kcOJ9jPSC";
-const BASE_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+/* CONFIG */
+const BIN_ID="69809848ae596e708f0b60cd";
+const API_KEY="$2a$10$SWRs0c4zsOCWZY5mPavGI.CFoLPsZilAUB1XKFEUU7r0kcOJ9jPSC";
+const BASE_URL=`https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
-/* ---------------- NAME ---------------- */
-const params = new URLSearchParams(location.search);
-const raw = params.get("query") || "You";
-const name = raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase();
+/* NAME */
+const params=new URLSearchParams(location.search);
+const raw=params.get("query")||"You";
+const name=raw.charAt(0).toUpperCase()+raw.slice(1).toLowerCase();
+document.getElementById("name").innerText=name;
+document.getElementById("intro").innerHTML=
+  `Hey ${name},<br>this little space is just for you.`;
 
-document.getElementById("name").innerText = name;
-document.getElementById("intro").innerHTML =
-  `Hey ${name},<br>this moment is real and from the heart.`;
-
-/* ---------------- HELPERS ---------------- */
-const sessionId = sessionStorage.getItem("sid") || crypto.randomUUID();
-sessionStorage.setItem("sid", sessionId);
-
-function getDevice(){
-  return {
-    ua: navigator.userAgent,
-    platform: navigator.platform,
-    screen: `${screen.width}x${screen.height}`,
-    lang: navigator.language
-  };
-}
-
+/* HELPERS */
 async function getData(){
-  const r = await fetch(BASE_URL,{headers:{"X-Access-Key":API_KEY}});
+  const r=await fetch(BASE_URL,{headers:{"X-Access-Key":API_KEY}});
   return (await r.json()).record;
 }
-
 async function saveResponse(choice,message=""){
-  const data = await getData();
+  const data=await getData();
   data.responses.push({
-    name,
-    choice,
-    message,
-    sessionId,
-    device:getDevice(),
+    name,choice,message,
     time:new Date().toISOString()
   });
-
   await fetch(BASE_URL,{
     method:"PUT",
     headers:{
@@ -178,51 +163,40 @@ async function saveResponse(choice,message=""){
     },
     body:JSON.stringify(data)
   });
-
-  localStorage.setItem("answered_"+name,"true");
 }
 
-/* ---------------- EXISTING RESPONSE CHECK ---------------- */
-(async ()=>{
-  const data = await getData();
-  const last = data.responses.reverse().find(r=>r.name===name);
-  if(last){
-    showFinal(last.choice,last.message);
-  }
+/* EXISTING RESPONSE */
+(async()=>{
+  const data=await getData();
+  const last=[...data.responses].reverse().find(r=>r.name===name);
+  if(last) showFinal(last.choice,last.message);
 })();
 
-/* ---------------- NO BUTTON DODGE ---------------- */
+/* NO DODGE */
 const no=document.getElementById("no");
-document.addEventListener("mousemove",e=>dodge(e.clientX,e.clientY));
+document.addEventListener("mousemove",e=>move(e.clientX,e.clientY));
 document.addEventListener("touchmove",e=>{
-  const t=e.touches[0];
-  dodge(t.clientX,t.clientY);
+  const t=e.touches[0]; move(t.clientX,t.clientY);
 },{passive:true});
-
-function dodge(x,y){
+function move(x,y){
   const r=no.getBoundingClientRect();
   if(Math.hypot(x-(r.left+r.width/2),y-(r.top+r.height/2))<70){
     no.style.transform=`translate(${Math.random()*220-110}px,${Math.random()*160-80}px)`;
   }
 }
 
-/* ---------------- YES / NO ---------------- */
+/* YES FLOW */
 document.getElementById("yes").onclick=()=>{
-  showReplyBox();
-};
-
-document.getElementById("no").onclick=()=>{
-  saveResponse("NO");
-  showFinal("NO","");
-};
-
-function showReplyBox(){
   document.getElementById("card").innerHTML=`
     <div class="final">
       <h1>💖</h1>
-      <p>${name}, this made me smile.</p>
-      <textarea id="reply" placeholder="Say something..."></textarea>
-      <button class="save-btn" id="save">Save my response</button>
+      <p>
+        That means something to me, ${name}.<br><br>
+        If you want, say something back.
+      </p>
+      <textarea id="reply"
+        placeholder="You can write anything here…"></textarea>
+      <button class="save-btn" id="save">Save my answer</button>
     </div>
   `;
   document.getElementById("save").onclick=()=>{
@@ -230,16 +204,31 @@ function showReplyBox(){
     saveResponse("YES",msg);
     showFinal("YES",msg);
   };
-}
+};
 
+/* NO */
+document.getElementById("no").onclick=()=>{
+  saveResponse("NO","");
+  showFinal("NO","");
+};
+
+/* FINAL VIEW */
 function showFinal(choice,msg){
   document.getElementById("card").innerHTML=`
     <div class="final">
       <h1>${choice==="YES"?"💖":"🤍"}</h1>
       <p>
-        You chose <b>${choice}</b><br><br>
-        ${msg || "Thank you for being honest."}
+        ${choice==="YES"
+          ? `You said yes, ${name}.<br>
+             And that made me really happy.`
+          : `Thank you for being honest, ${name}.`}
+        <br><br>
+        ${msg||""}
       </p>
+      ${choice==="YES"
+        ? `<img class="gif"
+            src="https://media.giphy.com/media/l2QDM9Jnim1YVILXa/giphy.gif">`
+        : ""}
     </div>
   `;
 }
