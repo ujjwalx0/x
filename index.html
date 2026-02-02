@@ -1,86 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>A Real Moment</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
-/* ---------- BACKGROUND LIGHT FLOAT ---------- */
-@keyframes floatLight {
+@keyframes float {
   0%,100% { transform: translateY(0) }
-  50% { transform: translateY(-22px) }
-}
-.light { animation: floatLight 7s ease-in-out infinite }
-
-/* ---------- CARD 3D ---------- */
-.card-3d {
-  transform-style: preserve-3d;
-  transition: transform .25s ease;
+  50% { transform: translateY(-18px) }
 }
 
-/* ---------- HEART BURST ---------- */
-@keyframes burst {
+@keyframes fadeUp {
+  from { opacity:0; transform: translateY(16px) }
+  to { opacity:1; transform:none }
+}
+
+@keyframes glow {
+  0%,100% { box-shadow: 0 0 40px rgba(255,120,160,.35) }
+  50% { box-shadow: 0 0 70px rgba(255,120,160,.55) }
+}
+
+@keyframes heartPop {
   from { transform: scale(.3); opacity:1 }
   to { transform: scale(2); opacity:0 }
 }
+
+.float { animation: float 7s ease-in-out infinite }
+.fadeUp { animation: fadeUp .6s ease forwards }
+.glow { animation: glow 6s ease-in-out infinite }
+
 .heart {
   position: fixed;
-  font-size: 26px;
-  animation: burst 1s ease forwards;
+  font-size: 24px;
+  animation: heartPop 1s ease forwards;
   pointer-events:none;
 }
-
-/* ---------- QUOTE REVEAL ---------- */
-@keyframes reveal {
-  from { opacity:0; transform: translateY(12px) }
-  to { opacity:1; transform:none }
-}
-.quote { animation: reveal .6s ease forwards }
 </style>
 </head>
 
-<body class="min-h-screen overflow-hidden flex items-center justify-center bg-gradient-to-br from-rose-50 via-pink-100 to-white">
+<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-50 via-pink-100 to-white overflow-hidden">
 
-<!-- AMBIENT LIGHTS -->
-<div class="absolute -top-40 -left-40 w-[420px] h-[420px] bg-pink-300/40 rounded-full blur-3xl light"></div>
-<div class="absolute -bottom-40 -right-40 w-[440px] h-[440px] bg-rose-200/50 rounded-full blur-3xl light"></div>
+<!-- Ambient Glow -->
+<div class="absolute -top-40 -left-40 w-[420px] h-[420px] bg-pink-300/40 rounded-full blur-3xl float"></div>
+<div class="absolute -bottom-40 -right-40 w-[420px] h-[420px] bg-rose-200/50 rounded-full blur-3xl float"></div>
 
-<!-- CARD -->
+<!-- Card -->
 <div id="card"
- class="card-3d relative z-10 w-full max-w-md mx-4 rounded-3xl bg-white/90 backdrop-blur-xl shadow-[0_40px_120px_rgba(255,120,160,.35)] p-7 text-center">
-
+ class="relative z-10 w-full max-w-md mx-4 rounded-3xl bg-white/80 backdrop-blur-xl p-7 text-center glow fadeUp">
 </div>
 
-<!-- MODAL -->
+<!-- Modal -->
 <div id="modal" class="fixed inset-0 hidden items-center justify-center bg-black/40 z-50">
-  <div class="bg-white rounded-3xl p-6 w-11/12 max-w-md text-center shadow-2xl animate-[reveal_.4s_ease_forwards]">
-    <h2 class="text-2xl font-semibold text-rose-500">You chose yes 💖</h2>
-    <p class="mt-3 text-gray-600">
-      Before this moment becomes a memory,<br>
-      would you like to say something meaningful?
+  <div class="bg-white rounded-3xl p-6 w-11/12 max-w-md text-center fadeUp">
+    <h2 class="text-2xl font-semibold text-rose-500">A moment worth keeping 💌</h2>
+
+    <p class="mt-3 text-gray-600 text-sm leading-relaxed">
+      This isn’t pressure.<br>
+      It’s honesty.<br>
+      A feeling you may want to remember.
     </p>
 
     <textarea id="replyInput"
-      class="mt-4 w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-300"
-      placeholder="Write whatever feels true…"></textarea>
+      class="mt-4 w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-300 text-sm"
+      placeholder="Write from your heart…"></textarea>
 
     <button id="submitReply"
-      class="mt-5 w-full py-3 rounded-xl bg-gradient-to-r from-rose-400 to-pink-500 text-white font-semibold shadow-lg">
-      Save my words
+      class="mt-5 w-full py-3 rounded-xl bg-gradient-to-r from-rose-400 to-pink-500 text-white font-semibold shadow-md active:scale-95 transition">
+      Save this feeling 💖
     </button>
   </div>
 </div>
 
 <script>
-/* ---------- CONFIG ---------- */
+/* ================= CONFIG ================= */
 const BIN_ID="69809848ae596e708f0b60cd";
 const API_KEY="$2a$10$SWRs0c4zsOCWZY5mPavGI.CFoLPsZilAUB1XKFEUU7r0kcOJ9jPSC";
 const BASE_URL=`https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
-/* ---------- IDENTITY ---------- */
+/* ================= IDENTITY ================= */
 const params=new URLSearchParams(location.search);
 const raw=params.get("query")||"You";
 const name=raw.charAt(0).toUpperCase()+raw.slice(1).toLowerCase();
@@ -91,16 +91,16 @@ if(!deviceId){
   localStorage.setItem("device_id",deviceId);
 }
 
-/* ---------- HELPERS ---------- */
+/* ================= API ================= */
 async function getData(){
   const r=await fetch(BASE_URL,{headers:{ "X-Access-Key":API_KEY }});
   return (await r.json()).record;
 }
+
 async function saveYes(message){
   const data=await getData();
   data.responses.push({
-    name,deviceId,message,
-    time:new Date().toISOString()
+    name,deviceId,message,time:new Date().toISOString()
   });
   await fetch(BASE_URL,{
     method:"PUT",
@@ -112,76 +112,83 @@ async function saveYes(message){
   });
 }
 
-/* ---------- RENDER ---------- */
+/* ================= UI ================= */
 const card=document.getElementById("card");
+const modal=document.getElementById("modal");
 
 function renderStart(){
   card.innerHTML=`
     <h1 class="text-3xl font-semibold text-gray-800">${name}</h1>
 
     <p class="mt-4 text-gray-700 text-lg leading-relaxed">
-      Some feelings don’t shout.<br>
-      They arrive quietly,<br>
-      settle gently,<br>
-      and stay longer than expected.
+      Not everything meaningful arrives loudly.<br>
+      Some feelings grow quietly,<br>
+      feel natural,<br>
+      and stay without explanation.
     </p>
 
     <p class="mt-6 text-xl font-medium text-gray-900">
-      Would you choose this feeling with me?
+      If I asked you to choose this feeling with me…
+    </p>
+
+    <p class="mt-2 text-sm text-gray-600">
+      what would your heart say?
     </p>
 
     <div class="mt-7 flex gap-3 justify-center">
       <button id="yes"
-        class="flex-1 py-3 rounded-xl bg-gradient-to-r from-rose-400 to-pink-500 text-white font-semibold shadow-md active:scale-95 transition">
-        Yes
+        class="px-6 py-2.5 rounded-full bg-gradient-to-r from-rose-400 to-pink-500 text-white text-sm font-semibold shadow-md active:scale-95 transition">
+        Yes 💖
       </button>
 
       <button id="no"
-        class="flex-[0.55] py-2 rounded-xl bg-gray-200 text-gray-700 text-sm select-none">
-        No
+        class="px-4 py-2 rounded-full bg-gray-200 text-gray-700 text-xs select-none">
+        No 🙈
       </button>
     </div>
 
-    <p class="mt-5 text-sm text-gray-500">
-      No pressure. Just honesty.
+    <p class="mt-5 text-xs text-gray-500">
+      No expectations. Just truth.
     </p>
 
     <footer class="mt-6 text-[11px] text-gray-400">
-      Made with love, for love — by Ujjwal
+      Crafted with love — by Ujjwal
     </footer>
   `;
 
   document.getElementById("yes").onclick=()=>{
     burstHearts();
-    document.getElementById("modal").classList.remove("hidden");
-    document.getElementById("modal").classList.add("flex");
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
   };
 }
 
 function renderFinal(msg){
   card.innerHTML=`
-    <h1 class="text-3xl">💖</h1>
+    <h1 class="text-4xl">💖</h1>
 
     <p class="mt-4 text-lg text-gray-800">
       You chose yes, ${name}.<br>
-      And this moment now means something real.
+      And this moment now matters.
     </p>
 
     <blockquote
-      class="quote mt-6 italic text-gray-700 border-l-4 border-rose-400 pl-4">
+      class="mt-6 italic text-gray-700 border-l-4 border-rose-400 pl-4">
       “${msg}”
     </blockquote>
 
-    <img class="mt-8 rounded-2xl shadow-xl"
-      src="https://media.giphy.com/media/l2QDM9Jnim1YVILXa/giphy.gif">
+    <p class="mt-6 text-sm text-gray-500">
+      Some moments don’t fade.<br>
+      They stay.
+    </p>
 
     <footer class="mt-6 text-[11px] text-gray-400">
-      Made with love, for love — by Ujjwal
+      Made with love — by Ujjwal
     </footer>
   `;
 }
 
-/* ---------- INIT ---------- */
+/* ================= INIT ================= */
 (async()=>{
   const data=await getData();
   const existing=[...data.responses].reverse()
@@ -194,16 +201,16 @@ function renderFinal(msg){
   }
 })();
 
-/* ---------- SAVE ---------- */
+/* ================= SAVE ================= */
 document.getElementById("submitReply").onclick=()=>{
   const msg=document.getElementById("replyInput").value.trim();
   if(!msg) return;
   saveYes(msg);
-  document.getElementById("modal").classList.add("hidden");
+  modal.classList.add("hidden");
   renderFinal(msg);
 };
 
-/* ---------- NO RUN FAST ---------- */
+/* ================= NO RUN ================= */
 document.addEventListener("mousemove",e=>run(e.clientX,e.clientY));
 document.addEventListener("touchmove",e=>{
   const t=e.touches[0]; run(t.clientX,t.clientY);
@@ -213,15 +220,15 @@ function run(x,y){
   const no=document.getElementById("no");
   if(!no) return;
   const r=no.getBoundingClientRect();
-  if(Math.hypot(x-(r.left+r.width/2),y-(r.top+r.height/2))<100){
+  if(Math.hypot(x-(r.left+r.width/2),y-(r.top+r.height/2))<90){
     no.style.transform=
-      `translate(${Math.random()*300-150}px,${Math.random()*220-110}px)`;
+      `translate(${Math.random()*240-120}px,${Math.random()*180-90}px)`;
   }
 }
 
-/* ---------- HEART EFFECT ---------- */
+/* ================= HEARTS ================= */
 function burstHearts(){
-  for(let i=0;i<14;i++){
+  for(let i=0;i<12;i++){
     const h=document.createElement("div");
     h.className="heart";
     h.innerText="💖";
@@ -231,13 +238,6 @@ function burstHearts(){
     setTimeout(()=>h.remove(),1000);
   }
 }
-
-/* ---------- 3D TILT ---------- */
-document.addEventListener("mousemove",e=>{
-  const x=(e.clientX/window.innerWidth-.5)*8;
-  const y=(e.clientY/window.innerHeight-.5)*-8;
-  card.style.transform=`rotateY(${x}deg) rotateX(${y}deg)`;
-});
 </script>
 
 </body>
