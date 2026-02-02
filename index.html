@@ -1,243 +1,209 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>A Real Moment</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>A Real Moment 💖</title>
 
+<!-- Tailwind -->
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
-@keyframes float {
-  0%,100% { transform: translateY(0) }
-  50% { transform: translateY(-18px) }
-}
+/* ===== GLOBAL RESET ===== */
+* { -webkit-tap-highlight-color: transparent }
 
-@keyframes fadeUp {
-  from { opacity:0; transform: translateY(16px) }
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+  from { opacity:0; transform: translateY(12px) }
   to { opacity:1; transform:none }
 }
-
-@keyframes glow {
-  0%,100% { box-shadow: 0 0 40px rgba(255,120,160,.35) }
-  50% { box-shadow: 0 0 70px rgba(255,120,160,.55) }
+@keyframes float {
+  0%,100% { transform: translateY(0) }
+  50% { transform: translateY(-14px) }
 }
-
-@keyframes heartPop {
-  from { transform: scale(.3); opacity:1 }
+@keyframes glow {
+  0%,100% { box-shadow:0 0 40px rgba(255,105,180,.35) }
+  50% { box-shadow:0 0 80px rgba(255,105,180,.55) }
+}
+@keyframes heart {
+  from { transform: scale(.4); opacity:1 }
   to { transform: scale(2); opacity:0 }
 }
 
-.float { animation: float 7s ease-in-out infinite }
-.fadeUp { animation: fadeUp .6s ease forwards }
-.glow { animation: glow 6s ease-in-out infinite }
+.fade { animation: fadeIn .6s ease forwards }
+.float { animation: float 6s ease-in-out infinite }
+.glow { animation: glow 5s ease-in-out infinite }
 
 .heart {
   position: fixed;
-  font-size: 24px;
-  animation: heartPop 1s ease forwards;
+  font-size: 26px;
+  animation: heart 1s ease forwards;
   pointer-events:none;
 }
 </style>
 </head>
 
-<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-50 via-pink-100 to-white overflow-hidden">
+<body class="min-h-screen bg-gradient-to-br from-rose-50 via-pink-100 to-white flex items-center justify-center overflow-hidden">
 
-<!-- Ambient Glow -->
+<!-- Ambient Lights -->
 <div class="absolute -top-40 -left-40 w-[420px] h-[420px] bg-pink-300/40 rounded-full blur-3xl float"></div>
 <div class="absolute -bottom-40 -right-40 w-[420px] h-[420px] bg-rose-200/50 rounded-full blur-3xl float"></div>
 
-<!-- Card -->
-<div id="card"
- class="relative z-10 w-full max-w-md mx-4 rounded-3xl bg-white/80 backdrop-blur-xl p-7 text-center glow fadeUp">
+<!-- MAIN CONTAINER -->
+<div id="app"
+ class="relative z-10 w-full max-w-md mx-auto px-4">
+
+  <!-- CARD -->
+  <div id="card"
+   class="bg-white/85 backdrop-blur-xl rounded-3xl p-7 text-center glow fade">
+  </div>
 </div>
 
-<!-- Modal -->
-<div id="modal" class="fixed inset-0 hidden items-center justify-center bg-black/40 z-50">
-  <div class="bg-white rounded-3xl p-6 w-11/12 max-w-md text-center fadeUp">
-    <h2 class="text-2xl font-semibold text-rose-500">A moment worth keeping 💌</h2>
+<!-- MODAL -->
+<div id="modal"
+ class="fixed inset-0 hidden items-center justify-center bg-black/40 z-50 px-4">
+  <div class="bg-white rounded-3xl p-6 w-full max-w-md text-center fade">
+    <h2 class="text-2xl font-semibold text-pink-500">Just one last thing 💌</h2>
 
     <p class="mt-3 text-gray-600 text-sm leading-relaxed">
-      This isn’t pressure.<br>
-      It’s honesty.<br>
-      A feeling you may want to remember.
+      No pressure 🌸<br>
+      Just write what your heart wants to say.
     </p>
 
-    <textarea id="replyInput"
-      class="mt-4 w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-300 text-sm"
-      placeholder="Write from your heart…"></textarea>
+    <textarea id="reply"
+      class="mt-4 w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-pink-300 outline-none text-sm"
+      placeholder="Type your feelings here… 💖"></textarea>
 
-    <button id="submitReply"
-      class="mt-5 w-full py-3 rounded-xl bg-gradient-to-r from-rose-400 to-pink-500 text-white font-semibold shadow-md active:scale-95 transition">
-      Save this feeling 💖
+    <button id="save"
+      class="mt-5 w-full py-3 rounded-xl bg-gradient-to-r from-pink-400 to-rose-500 text-white font-semibold shadow-md active:scale-95 transition">
+      Save my words 💞
     </button>
   </div>
 </div>
 
 <script>
-/* ================= CONFIG ================= */
-const BIN_ID="69809848ae596e708f0b60cd";
-const API_KEY="$2a$10$SWRs0c4zsOCWZY5mPavGI.CFoLPsZilAUB1XKFEUU7r0kcOJ9jPSC";
-const BASE_URL=`https://api.jsonbin.io/v3/b/${BIN_ID}`;
+/* ===== NAME ===== */
+const q=new URLSearchParams(location.search);
+const name=(q.get("query")||"You")
+  .replace(/^\w/,c=>c.toUpperCase());
 
-/* ================= IDENTITY ================= */
-const params=new URLSearchParams(location.search);
-const raw=params.get("query")||"You";
-const name=raw.charAt(0).toUpperCase()+raw.slice(1).toLowerCase();
-
-let deviceId=localStorage.getItem("device_id");
-if(!deviceId){
-  deviceId=crypto.randomUUID();
-  localStorage.setItem("device_id",deviceId);
-}
-
-/* ================= API ================= */
-async function getData(){
-  const r=await fetch(BASE_URL,{headers:{ "X-Access-Key":API_KEY }});
-  return (await r.json()).record;
-}
-
-async function saveYes(message){
-  const data=await getData();
-  data.responses.push({
-    name,deviceId,message,time:new Date().toISOString()
-  });
-  await fetch(BASE_URL,{
-    method:"PUT",
-    headers:{
-      "Content-Type":"application/json",
-      "X-Access-Key":API_KEY
-    },
-    body:JSON.stringify(data)
-  });
-}
-
-/* ================= UI ================= */
+/* ===== ELEMENTS ===== */
 const card=document.getElementById("card");
 const modal=document.getElementById("modal");
 
-function renderStart(){
-  card.innerHTML=`
-    <h1 class="text-3xl font-semibold text-gray-800">${name}</h1>
+/* ===== RENDER START ===== */
+function start(){
+card.innerHTML=`
+<h1 class="text-3xl font-semibold text-gray-800">${name} 🌸</h1>
 
-    <p class="mt-4 text-gray-700 text-lg leading-relaxed">
-      Not everything meaningful arrives loudly.<br>
-      Some feelings grow quietly,<br>
-      feel natural,<br>
-      and stay without explanation.
-    </p>
+<p class="mt-4 text-gray-700 text-lg leading-relaxed">
+Some moments don’t ask loudly.<br>
+They just feel right… quietly ✨
+</p>
 
-    <p class="mt-6 text-xl font-medium text-gray-900">
-      If I asked you to choose this feeling with me…
-    </p>
+<p class="mt-6 text-xl font-medium text-gray-900">
+If I asked you to choose this feeling with me 💖
+</p>
 
-    <p class="mt-2 text-sm text-gray-600">
-      what would your heart say?
-    </p>
+<p class="mt-2 text-sm text-gray-600">
+what would your heart say?
+</p>
 
-    <div class="mt-7 flex gap-3 justify-center">
-      <button id="yes"
-        class="px-6 py-2.5 rounded-full bg-gradient-to-r from-rose-400 to-pink-500 text-white text-sm font-semibold shadow-md active:scale-95 transition">
-        Yes 💖
-      </button>
+<div class="mt-7 flex justify-center gap-3">
+<button id="yes"
+ class="px-6 py-2.5 rounded-full bg-gradient-to-r from-pink-400 to-rose-500 text-white text-sm font-semibold shadow-md active:scale-95">
+Yes 💕
+</button>
 
-      <button id="no"
-        class="px-4 py-2 rounded-full bg-gray-200 text-gray-700 text-xs select-none">
-        No 🙈
-      </button>
-    </div>
+<button id="no"
+ class="px-4 py-2 rounded-full bg-gray-200 text-gray-700 text-xs">
+No 🙈
+</button>
+</div>
 
-    <p class="mt-5 text-xs text-gray-500">
-      No expectations. Just truth.
-    </p>
+<p class="mt-5 text-xs text-gray-500">
+This moment is safe 🤍
+</p>
 
-    <footer class="mt-6 text-[11px] text-gray-400">
-      Crafted with love — by Ujjwal
-    </footer>
-  `;
+<footer class="mt-6 text-[11px] text-gray-400">
+Made with love — by Ujjwal
+</footer>
+`;
 
-  document.getElementById("yes").onclick=()=>{
-    burstHearts();
-    modal.classList.remove("hidden");
-    modal.classList.add("flex");
-  };
+document.getElementById("yes").onclick=()=>{
+burst();
+modal.classList.remove("hidden");
+modal.classList.add("flex");
+};
 }
 
-function renderFinal(msg){
-  card.innerHTML=`
-    <h1 class="text-4xl">💖</h1>
+/* ===== FINAL ===== */
+function final(msg){
+card.innerHTML=`
+<h1 class="text-4xl">💖💖💖</h1>
 
-    <p class="mt-4 text-lg text-gray-800">
-      You chose yes, ${name}.<br>
-      And this moment now matters.
-    </p>
+<p class="mt-4 text-lg text-gray-800">
+You said yes, ${name} 🥹<br>
+And that means everything.
+</p>
 
-    <blockquote
-      class="mt-6 italic text-gray-700 border-l-4 border-rose-400 pl-4">
-      “${msg}”
-    </blockquote>
+<blockquote class="mt-6 italic text-gray-700 border-l-4 border-pink-400 pl-4">
+"${msg}"
+</blockquote>
 
-    <p class="mt-6 text-sm text-gray-500">
-      Some moments don’t fade.<br>
-      They stay.
-    </p>
+<img
+ class="mt-8 rounded-2xl shadow-xl mx-auto"
+ src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMTR2emF2MzdjOXB1YTNlYThzbmQ0eXd2N3k2eXRlY2c0aXkzY2p3diZlcD12MV9naWZzX3NlYXJjaCZjdD1n/QvBoMEcQ7DQXK/giphy.gif"
+/>
 
-    <footer class="mt-6 text-[11px] text-gray-400">
-      Made with love — by Ujjwal
-    </footer>
-  `;
+<p class="mt-6 text-sm text-gray-500">
+This moment stays forever 💞
+</p>
+
+<footer class="mt-6 text-[11px] text-gray-400">
+Made with love — by Ujjwal
+</footer>
+`;
 }
 
-/* ================= INIT ================= */
-(async()=>{
-  const data=await getData();
-  const existing=[...data.responses].reverse()
-    .find(r=>r.name===name && r.deviceId===deviceId);
-
-  if(existing){
-    renderFinal(existing.message);
-  }else{
-    renderStart();
-  }
-})();
-
-/* ================= SAVE ================= */
-document.getElementById("submitReply").onclick=()=>{
-  const msg=document.getElementById("replyInput").value.trim();
-  if(!msg) return;
-  saveYes(msg);
-  modal.classList.add("hidden");
-  renderFinal(msg);
+/* ===== SAVE ===== */
+document.getElementById("save").onclick=()=>{
+const msg=document.getElementById("reply").value.trim();
+if(!msg) return;
+modal.classList.add("hidden");
+final(msg);
 };
 
-/* ================= NO RUN ================= */
+/* ===== HEARTS ===== */
+function burst(){
+for(let i=0;i<18;i++){
+const h=document.createElement("div");
+h.className="heart";
+h.innerText="💖";
+h.style.left=Math.random()*100+"vw";
+h.style.top=Math.random()*100+"vh";
+document.body.appendChild(h);
+setTimeout(()=>h.remove(),1000);
+}
+}
+
+/* ===== NO RUN ===== */
 document.addEventListener("mousemove",e=>run(e.clientX,e.clientY));
 document.addEventListener("touchmove",e=>{
-  const t=e.touches[0]; run(t.clientX,t.clientY);
+const t=e.touches[0]; run(t.clientX,t.clientY);
 },{passive:true});
 
 function run(x,y){
-  const no=document.getElementById("no");
-  if(!no) return;
-  const r=no.getBoundingClientRect();
-  if(Math.hypot(x-(r.left+r.width/2),y-(r.top+r.height/2))<90){
-    no.style.transform=
-      `translate(${Math.random()*240-120}px,${Math.random()*180-90}px)`;
-  }
+const no=document.getElementById("no");
+if(!no) return;
+const r=no.getBoundingClientRect();
+if(Math.hypot(x-(r.left+r.width/2),y-(r.top+r.height/2))<80){
+no.style.transform=`translate(${Math.random()*180-90}px,${Math.random()*140-70}px)`;
+}
 }
 
-/* ================= HEARTS ================= */
-function burstHearts(){
-  for(let i=0;i<12;i++){
-    const h=document.createElement("div");
-    h.className="heart";
-    h.innerText="💖";
-    h.style.left=Math.random()*100+"vw";
-    h.style.top=Math.random()*100+"vh";
-    document.body.appendChild(h);
-    setTimeout(()=>h.remove(),1000);
-  }
-}
+/* ===== INIT ===== */
+start();
 </script>
 
 </body>
