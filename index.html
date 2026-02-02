@@ -1,149 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-<title>One Honest Moment</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>A Simple Choice</title>
 
 <style>
-/* -------------------- RESET & TOKENS -------------------- */
 *{box-sizing:border-box}
+
 :root{
-  --bgA:#ff7ab8;
-  --bgB:#7f8cff;
-  --glass:rgba(255,255,255,.16);
-  --txt:#ffffff;
-  --muted:rgba(255,255,255,.82);
-  --radius:28px;
-  --ease:cubic-bezier(.22,.61,.36,1);
+  --bg:#0a0f1f;
+  --card:#11162a;
+  --accent:#7cf3c9;
+  --accent2:#8aa2ff;
+  --text:#ffffff;
+  --muted:#cfd6ff;
 }
 
-/* -------------------- LAYOUT -------------------- */
-html,body{height:100%}
 body{
   margin:0;
+  min-height:100svh;
   display:flex;
   align-items:center;
   justify-content:center;
   font-family:system-ui,-apple-system,"Poppins";
-  color:var(--txt);
   background:
-    radial-gradient(70% 60% at 12% 10%, color-mix(in oklab, var(--bgA) 60%, transparent), transparent),
-    radial-gradient(60% 60% at 88% 92%, color-mix(in oklab, var(--bgB) 60%, transparent), transparent),
-    #0b0c12;
+    radial-gradient(60% 40% at 20% 10%, #8aa2ff55, transparent),
+    radial-gradient(60% 40% at 80% 90%, #7cf3c955, transparent),
+    var(--bg);
+  color:var(--text);
   padding:14px;
   overflow:hidden;
 }
 
-/* -------------------- CARD -------------------- */
 .card{
   width:100%;
   max-width:380px;
-  padding:22px 20px 24px;
-  border-radius:var(--radius);
-  background:var(--glass);
-  backdrop-filter:blur(22px);
-  box-shadow:0 28px 90px rgba(0,0,0,.55);
+  background:linear-gradient(180deg,#141a33,#0f1430);
+  border-radius:26px;
+  padding:24px 20px 26px;
+  box-shadow:0 30px 90px rgba(0,0,0,.65);
   text-align:center;
-  transform:translateY(10px) scale(.98);
-  opacity:0;
-  animation:enter .8s var(--ease) forwards;
+  animation:fadeUp .7s ease forwards;
 }
-@keyframes enter{to{transform:none;opacity:1}}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(18px) scale(.97)}
+  to{opacity:1;transform:none}
+}
 
 h1{
   margin:0 0 6px;
   font-size:28px;
   font-weight:700;
-  background:linear-gradient(135deg,#ffd9ec,#ffffff);
-  -webkit-background-clip:text;
-  color:transparent;
+  color:var(--accent);
 }
 
 .emojis{
   font-size:22px;
-  letter-spacing:6px;
-  margin:8px 0 6px;
-  filter:drop-shadow(0 6px 18px rgba(255,255,255,.25));
+  margin:10px 0 8px;
 }
 
 p{
-  font-size:15.2px;
+  font-size:15.4px;
   line-height:1.6;
   color:var(--muted);
-  margin:0 0 10px;
+  margin:0 0 12px;
 }
 
 .question{
-  margin:10px 0 6px;
-  font-size:18px;
+  font-size:18.5px;
   font-weight:600;
   color:#fff;
+  margin:10px 0 6px;
 }
 
 .hint{
-  font-size:13.2px;
-  opacity:.9;
-  margin-bottom:16px;
+  font-size:13.5px;
+  color:#b8c2ff;
+  margin-bottom:18px;
 }
 
-/* -------------------- BUTTONS -------------------- */
-.btns{display:flex;gap:12px}
+.btns{
+  display:flex;
+  gap:12px;
+}
+
 button{
   flex:1;
   padding:14px 0;
   font-size:15.5px;
   border:none;
-  border-radius:22px;
+  border-radius:20px;
   cursor:pointer;
-  transition:transform .15s var(--ease), box-shadow .15s var(--ease);
+  transition:transform .15s ease;
 }
-button:active{transform:scale(.96)}
+
+button:active{transform:scale(.95)}
+
 #yes{
-  background:linear-gradient(135deg,#ff3b7f,#ff9ad6);
-  color:#fff;
-  box-shadow:0 14px 40px rgba(255,59,127,.55);
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#0a0f1f;
+  font-weight:600;
 }
+
 #no{
-  background:rgba(255,255,255,.28);
+  background:#1b2142;
   color:#fff;
   position:relative;
 }
 
-/* -------------------- MICRO COPY -------------------- */
 .small{
-  margin-top:8px;
-  font-size:12.6px;
-  opacity:.78;
+  margin-top:10px;
+  font-size:12.8px;
+  color:#9aa6ff;
 }
 
-/* -------------------- AFTER YES -------------------- */
-.final h1{font-size:34px}
-.final p{font-size:15.8px}
-.gif{
-  width:100%;
-  max-height:240px;
-  object-fit:cover;
-  border-radius:18px;
-  margin-top:16px;
-  box-shadow:0 16px 48px rgba(0,0,0,.45);
+/* AFTER YES */
+.final h1{
+  font-size:32px;
+  color:var(--accent);
+}
+.final p{
+  font-size:15.8px;
+  color:#e6ebff;
 }
 
-/* -------------------- PARTICLES (SUBTLE JOY) -------------------- */
+/* Celebration particles */
 .spark{
   position:absolute;
-  font-size:18px;
+  font-size:20px;
+  animation:rise 2.2s ease forwards;
   pointer-events:none;
-  animation:spark 2.6s var(--ease) forwards;
-}
-@keyframes spark{
-  from{transform:translateY(0) scale(1);opacity:1}
-  to{transform:translateY(-120px) scale(.9);opacity:0}
 }
 
-/* -------------------- ACCESSIBILITY -------------------- */
-@media (prefers-reduced-motion:reduce){
-  *{animation:none!important;transition:none!important}
+@keyframes rise{
+  from{transform:translateY(0);opacity:1}
+  to{transform:translateY(-140px);opacity:0}
 }
 </style>
 </head>
@@ -153,17 +146,17 @@ button:active{transform:scale(.96)}
 <div class="card" id="card">
   <h1 id="name"></h1>
 
-  <div class="emojis">✨ 🤍 💫 🫶</div>
+  <div class="emojis">🌿 ✨ 🌈</div>
 
   <p id="intro"></p>
 
   <div class="question">
-    I like you—calmly, clearly, and with intention.
+    I feel good when you are around.
   </div>
 
   <div class="hint">
-    Choose yes if you feel it too.  
-    Choose no if you don’t. Both are respected.
+    If you feel the same, choose yes.
+    If not, choose no.
   </div>
 
   <div class="btns">
@@ -171,66 +164,72 @@ button:active{transform:scale(.96)}
     <button id="no">No</button>
   </div>
 
-  <div class="small">No pressure. Just honesty.</div>
+  <div class="small">
+    Simple choice. Honest answer.
+  </div>
 </div>
 
 <script>
-/* -------------------- NAME (query param) -------------------- */
-const q=new URLSearchParams(location.search);
-const raw=q.get("query")||"You";
+/* NAME FROM query */
+const params=new URLSearchParams(location.search);
+const raw=params.get("query")||"You";
 const name=raw.charAt(0).toUpperCase()+raw.slice(1).toLowerCase();
+
 document.getElementById("name").innerText=name;
 document.getElementById("intro").innerHTML=
-  `Hey ${name},<br>this moment is simple, sincere, and real.`;
+  `Hey ${name}, this is calm, genuine, and real.`;
 
-/* -------------------- NO BUTTON (NATURAL PROXIMITY) -------------------- */
+/* NO BUTTON – VERY FAST ON MOBILE */
 const no=document.getElementById("no");
+
 function near(x,y){
   const r=no.getBoundingClientRect();
-  return Math.hypot(x-(r.left+r.width/2), y-(r.top+r.height/2))<68;
+  return Math.hypot(
+    x-(r.left+r.width/2),
+    y-(r.top+r.height/2)
+  ) < 60;
 }
+
 function dodge(){
-  no.style.transform=`translate(${Math.random()*150-75}px,${Math.random()*110-55}px)`;
+  no.style.transition="transform .08s linear";
+  no.style.transform=
+    `translate(${Math.random()*220-110}px,${Math.random()*160-80}px)`;
 }
-document.addEventListener("mousemove",e=>{ if(near(e.clientX,e.clientY)) dodge(); });
+
+/* aggressive mobile response */
 document.addEventListener("touchmove",e=>{
   const t=e.touches[0];
   if(near(t.clientX,t.clientY)) dodge();
 },{passive:true});
 
-/* -------------------- YES → DELIGHT -------------------- */
-const hugGifs=[
- "https://media.giphy.com/media/l2QDM9Jnim1YVILXa/giphy.gif",
- "https://media.giphy.com/media/od5H3PmEG5EVq/giphy.gif",
- "https://media.giphy.com/media/HaC1WdpkL3W00/giphy.gif"
-];
-const pick=a=>a[Math.floor(Math.random()*a.length)];
+document.addEventListener("mousemove",e=>{
+  if(near(e.clientX,e.clientY)) dodge();
+});
 
+/* YES CLICK – PURE JOY */
 document.getElementById("yes").onclick=()=>{
-  joy();
+  celebrate();
   document.getElementById("card").innerHTML=`
     <div class="final">
-      <h1>🤍</h1>
+      <h1>That feels right ✨</h1>
       <p>
-        ${name},<br><br>
-        then let’s choose each other—<br>
-        gently, honestly, for the long run.
+        ${name}, this made me smile.
+        Let us keep this feeling alive.
       </p>
-      <img class="gif" src="${pick(hugGifs)}" alt="warm hug">
     </div>
   `;
 };
 
-function joy(){
-  const arr=["🤍","✨","💫","🫶","💖"];
-  for(let i=0;i<14;i++){
+function celebrate(){
+  const icons=["✨","🌈","💚","🌟","💫"];
+  for(let i=0;i<18;i++){
     const s=document.createElement("div");
     s.className="spark";
-    s.innerText=arr[Math.floor(Math.random()*arr.length)];
+    s.innerText=icons[Math.floor(Math.random()*icons.length)];
     s.style.left=Math.random()*100+"vw";
-    s.style.bottom="18vh";
+    s.style.bottom="20vh";
     document.body.appendChild(s);
-    setTimeout(()=>s.remove(),2600);
+    setTimeout(()=>s.remove(),2200);
   }
 }
 </script>
