@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>A Question That Matters</title>
 
 <style>
@@ -12,33 +12,33 @@ body{
   margin:0;
   min-height:100vh;
   display:flex;
-  justify-content:center;
   align-items:center;
+  justify-content:center;
   font-family:system-ui,-apple-system,"Poppins";
   background:
     radial-gradient(60% 60% at 20% 10%, #ff4d9d44, transparent),
     radial-gradient(50% 50% at 80% 90%, #7b4dff44, transparent),
     #07070d;
+  color:#fff;
   overflow:hidden;
   padding:18px;
-  color:#fff;
 }
 
 .card{
   width:100%;
-  max-width:420px;
+  max-width:430px;
   padding:38px 26px 42px;
-  border-radius:34px;
+  border-radius:36px;
   background:rgba(255,255,255,.10);
-  backdrop-filter:blur(26px);
-  box-shadow:0 50px 140px rgba(0,0,0,.65);
+  backdrop-filter:blur(28px);
+  box-shadow:0 55px 150px rgba(0,0,0,.7);
   text-align:center;
   animation:enter .7s ease;
 }
 
 @keyframes enter{
-  from{transform:translateY(20px) scale(.96);opacity:0}
-  to{transform:none;opacity:1}
+  from{opacity:0;transform:translateY(20px) scale(.96)}
+  to{opacity:1;transform:none}
 }
 
 h1{
@@ -53,7 +53,7 @@ h1{
 p{
   font-size:16.6px;
   line-height:1.7;
-  opacity:.96;
+  opacity:.95;
 }
 
 .hero{
@@ -63,9 +63,9 @@ p{
 }
 
 .question{
-  margin:18px 0 8px;
   font-size:21px;
   font-weight:600;
+  margin:16px 0 8px;
 }
 
 .meaning{
@@ -84,14 +84,14 @@ button{
   padding:17px 0;
   font-size:16.8px;
   border:none;
-  border-radius:26px;
+  border-radius:28px;
   cursor:pointer;
 }
 
 #yes{
   background:linear-gradient(135deg,#ff2f7d,#ff8fd1);
   color:#fff;
-  box-shadow:0 18px 50px rgba(255,47,125,.55);
+  box-shadow:0 18px 55px rgba(255,47,125,.6);
 }
 
 #no{
@@ -100,16 +100,16 @@ button{
   position:relative;
 }
 
-.final h1{font-size:42px}
-.final p{font-size:17.8px}
+.final h1{font-size:44px}
+.final p{font-size:18px}
 
 .gif{
   width:100%;
-  border-radius:22px;
-  margin-top:24px;
+  border-radius:24px;
+  margin-top:26px;
 }
 
-/* floating minimal particles */
+/* floating dots */
 .dot{
   position:absolute;
   width:6px;height:6px;
@@ -132,18 +132,15 @@ button{
 
   <p id="intro"></p>
 
-  <!-- PROPOSAL MOMENT -->
-  <img class="hero"
-    src="https://media.giphy.com/media/xUPGcguWZHRC2HyBRS/giphy.gif"
-    alt="moment">
+  <img class="hero" id="heroGif" alt="moment">
 
   <div class="question">
     Do you choose me — not just now, but for the long run?
   </div>
 
   <div class="meaning">
-    Yes = “I want you in my life.”  
-    <br>No = “I don’t feel that way.”
+    Yes = “I want you in my life.”<br>
+    No = “I don’t feel that way.”
   </div>
 
   <div class="btns">
@@ -153,25 +150,52 @@ button{
 </div>
 
 <script>
-/* ===== NAME FROM URL ===== */
-const params=new URLSearchParams(location.search);
-const raw=params.get("name")||"You";
-const name=raw.charAt(0).toUpperCase()+raw.slice(1).toLowerCase();
+/* ========= NAME FROM URL ========= */
+const params = new URLSearchParams(location.search);
+const raw = params.get("name") || "You";
+const name = raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase();
 
-document.getElementById("name").innerText=name;
-document.getElementById("intro").innerHTML=
+document.getElementById("name").innerText = name;
+document.getElementById("intro").innerHTML =
   `Hey ${name},<br>
    this isn’t about a moment.<br>
    It’s about intention.`;
 
-/* ===== NO BUTTON (ONLY WHEN CLOSE) ===== */
-const no=document.getElementById("no");
+/* ========= GIF COLLECTIONS ========= */
+
+/* proposal / love (first page) */
+let proposalGifs = [
+  "https://media.giphy.com/media/xUPGcguWZHRC2HyBRS/giphy.gif",
+  "https://media.giphy.com/media/l0HlBO7eyXzSZkJri/giphy.gif",
+  "https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif",
+  "https://media.giphy.com/media/3oriO6qJiXajN0TyDu/giphy.gif",
+  "https://media.giphy.com/media/l4FGpP4lxGGgK5CBW/giphy.gif"
+];
+
+/* hug / kiss / love (yes page) */
+let hugGifs = [
+  "https://media.giphy.com/media/l2QDM9Jnim1YVILXa/giphy.gif",
+  "https://media.giphy.com/media/od5H3PmEG5EVq/giphy.gif",
+  "https://media.giphy.com/media/3oEjI4sFlp73fvEYgw/giphy.gif",
+  "https://media.giphy.com/media/HaC1WdpkL3W00/giphy.gif",
+  "https://media.giphy.com/media/gnXG2hODaCOru/giphy.gif"
+];
+
+function pick(arr){
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+
+/* load random proposal gif */
+document.getElementById("heroGif").src = pick(proposalGifs);
+
+/* ========= NO BUTTON (PROXIMITY BASED) ========= */
+const no = document.getElementById("no");
 
 function near(x,y){
   const r=no.getBoundingClientRect();
   const cx=r.left+r.width/2;
   const cy=r.top+r.height/2;
-  return Math.hypot(x-cx,y-cy)<85;
+  return Math.hypot(x-cx,y-cy)<90;
 }
 
 function run(){
@@ -183,12 +207,13 @@ function run(){
 document.addEventListener("mousemove",e=>{
   if(near(e.clientX,e.clientY)) run();
 });
+
 document.addEventListener("touchmove",e=>{
   const t=e.touches[0];
   if(near(t.clientX,t.clientY)) run();
 });
 
-/* ===== YES CLICK (LIFETIME HUG) ===== */
+/* ========= YES CLICK ========= */
 document.getElementById("yes").onclick=()=>{
   document.getElementById("card").innerHTML=`
     <div class="final">
@@ -199,13 +224,12 @@ document.getElementById("yes").onclick=()=>{
         this hug isn’t loud — it’s real 🤍<br><br>
         let’s stay.
       </p>
-      <img class="gif"
-        src="https://media.giphy.com/media/l2QDM9Jnim1YVILXa/giphy.gif">
+      <img class="gif" src="${pick(hugGifs)}">
     </div>
   `;
 };
 
-/* ===== FLOATING DOTS ===== */
+/* ========= FLOATING DOTS ========= */
 setInterval(()=>{
   const d=document.createElement("div");
   d.className="dot";
