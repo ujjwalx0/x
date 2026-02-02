@@ -5,42 +5,67 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>One Real Feeling</title>
 
-<!-- TAILWIND CDN -->
 <script src="https://cdn.tailwindcss.com"></script>
 
 </head>
-<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-500/30 via-purple-500/20 to-black text-white">
+<body class="min-h-screen bg-gradient-to-br from-pink-500/30 via-purple-600/20 to-black flex items-center justify-center text-white">
 
-<div id="card" class="w-full max-w-md mx-4 rounded-3xl bg-white/10 backdrop-blur-xl p-6 shadow-2xl text-center">
+<div id="card" class="w-full max-w-md mx-4 rounded-3xl bg-white/10 backdrop-blur-xl p-6 shadow-2xl text-center"></div>
+
+<!-- MODAL -->
+<div id="modal" class="fixed inset-0 hidden items-center justify-center bg-black/60 z-50">
+  <div class="bg-white text-black rounded-2xl w-11/12 max-w-md p-6 text-center">
+    <h2 class="text-2xl font-bold text-pink-500">You said yes 💖</h2>
+    <p class="mt-3 text-gray-700">
+      Would you like to say something to the one who asked?
+    </p>
+
+    <textarea id="replyInput"
+      class="mt-4 w-full p-3 border rounded-xl"
+      placeholder="Write from your heart..."></textarea>
+
+    <button id="submitReply"
+      class="mt-4 w-full py-3 rounded-xl bg-gradient-to-r from-pink-500 to-rose-400 text-black font-semibold">
+      Save my words
+    </button>
+  </div>
 </div>
 
 <script>
 /* ---------------- CONFIG ---------------- */
-const BIN_ID = "69809848ae596e708f0b60cd";
-const API_KEY = "$2a$10$SWRs0c4zsOCWZY5mPavGI.CFoLPsZilAUB1XKFEUU7r0kcOJ9jPSC";
-const BASE_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+const BIN_ID="69809848ae596e708f0b60cd";
+const API_KEY="$2a$10$SWRs0c4zsOCWZY5mPavGI.CFoLPsZilAUB1XKFEUU7r0kcOJ9jPSC";
+const BASE_URL=`https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
-/* ---------------- NAME ---------------- */
-const params = new URLSearchParams(location.search);
-const raw = params.get("query") || "You";
-const name = raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase();
+/* ---------------- IDENTITY ---------------- */
+const params=new URLSearchParams(location.search);
+const raw=params.get("query")||"You";
+const name=raw.charAt(0).toUpperCase()+raw.slice(1).toLowerCase();
 
-/* ---------------- STATE ---------------- */
-const answeredKey = "answered_" + name;
-const canEdit = sessionStorage.getItem("can_edit_" + name);
+let deviceId=localStorage.getItem("device_id");
+if(!deviceId){
+  deviceId=crypto.randomUUID();
+  localStorage.setItem("device_id",deviceId);
+}
 
 /* ---------------- HELPERS ---------------- */
 async function getData(){
-  const r = await fetch(BASE_URL,{headers:{ "X-Access-Key":API_KEY }});
+  const r=await fetch(BASE_URL,{headers:{ "X-Access-Key":API_KEY }});
   return (await r.json()).record;
 }
 
 async function saveResponse(choice,message=""){
-  const data = await getData();
+  const data=await getData();
   data.responses.push({
     name,
+    deviceId,
     choice,
     message,
+    device:{
+      ua:navigator.userAgent,
+      screen:`${screen.width}x${screen.height}`,
+      lang:navigator.language
+    },
     time:new Date().toISOString()
   });
   await fetch(BASE_URL,{
@@ -51,29 +76,31 @@ async function saveResponse(choice,message=""){
     },
     body:JSON.stringify(data)
   });
-
-  localStorage.setItem(answeredKey,"true");
-  sessionStorage.setItem("can_edit_" + name,"false");
+  localStorage.setItem("answered_"+name+"_"+deviceId,"true");
 }
 
-/* ---------------- RENDER FUNCTIONS ---------------- */
+/* ---------------- RENDER ---------------- */
+const card=document.getElementById("card");
+
 function renderQuestion(){
-  card.innerHTML = `
+  card.innerHTML=`
     <h1 class="text-3xl font-bold text-pink-400">${name}</h1>
-    <p class="mt-4 text-pink-100 text-lg leading-relaxed">
-      This isn’t casual.<br>
-      This is something I feel clearly.
+    <p class="mt-4 text-pink-100 text-lg">
+      This is not a casual question.<br>
+      It comes from a real place.
     </p>
 
     <p class="mt-6 text-xl font-semibold">
-      Do you feel it too?
+      Would you choose this moment with me?
     </p>
 
     <div class="mt-6 flex gap-3">
-      <button id="yes" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-rose-400 text-black font-semibold">
+      <button id="yes"
+        class="flex-1 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-rose-400 text-black font-semibold">
         Yes
       </button>
-      <button id="no" class="flex-[0.6] py-3 rounded-xl bg-white/20 text-white">
+      <button id="no"
+        class="flex-[0.6] py-3 rounded-xl bg-white/20 text-white text-sm">
         No
       </button>
     </div>
@@ -83,71 +110,73 @@ function renderQuestion(){
     </p>
   `;
 
-  document.getElementById("yes").onclick = ()=>{
-    sessionStorage.setItem("can_edit_" + name,"true");
-    renderReply();
+  document.getElementById("yes").onclick=()=>{
+    document.getElementById("modal").classList.remove("hidden");
+    document.getElementById("modal").classList.add("flex");
   };
 
-  document.getElementById("no").onclick = ()=>{
+  document.getElementById("no").onclick=()=>{
     saveResponse("NO","");
     renderFinal("NO","");
   };
 }
 
-function renderReply(){
-  card.innerHTML = `
-    <h1 class="text-3xl font-bold text-pink-400">💖</h1>
-    <p class="mt-4 text-lg text-pink-100">
-      That means something to me, ${name}.<br>
-      If you want, say something back.
-    </p>
-
-    <textarea id="reply"
-      class="mt-4 w-full rounded-xl p-3 text-black"
-      placeholder="Write whatever you feel…"></textarea>
-
-    <button id="save"
-      class="mt-4 w-full py-3 rounded-xl bg-gradient-to-r from-pink-500 to-rose-400 text-black font-semibold">
-      Save my response
-    </button>
-  `;
-
-  document.getElementById("save").onclick = ()=>{
-    const msg = document.getElementById("reply").value.trim();
-    saveResponse("YES",msg);
-    renderFinal("YES",msg);
-  };
-}
-
 function renderFinal(choice,msg){
-  card.innerHTML = `
+  card.innerHTML=`
     <h1 class="text-3xl">${choice==="YES"?"💖":"🤍"}</h1>
+
     <p class="mt-4 text-lg text-pink-100">
       ${choice==="YES"
-        ? `You said yes, ${name}.<br>That made me really happy.`
+        ? `You said yes, ${name}.<br>This moment will stay with me.`
         : `Thank you for being honest, ${name}.`}
     </p>
 
-    ${msg ? `<p class="mt-4 italic text-pink-200">"${msg}"</p>` : ""}
+    ${msg?`
+      <blockquote class="mt-6 italic text-pink-200 border-l-4 border-pink-400 pl-4">
+        “${msg}”
+      </blockquote>`:""}
 
-    ${choice==="YES"
-      ? `<img class="mt-6 rounded-2xl shadow-xl"
-         src="https://media.giphy.com/media/l2QDM9Jnim1YVILXa/giphy.gif">`
-      : ""}
+    ${choice==="YES"?`
+      <img class="mt-8 rounded-2xl shadow-2xl"
+        src="https://media.giphy.com/media/l2QDM9Jnim1YVILXa/giphy.gif">`:""}
   `;
 }
 
 /* ---------------- INIT ---------------- */
-(async ()=>{
-  const data = await getData();
-  const last = [...data.responses].reverse().find(r=>r.name===name);
+(async()=>{
+  const data=await getData();
+  const existing=[...data.responses].reverse()
+    .find(r=>r.name===name && r.deviceId===deviceId);
 
-  if(last && !canEdit){
-    renderFinal(last.choice,last.message);
-  } else {
+  if(existing){
+    renderFinal(existing.choice,existing.message);
+  }else{
     renderQuestion();
   }
 })();
+
+/* ---------------- MODAL SAVE ---------------- */
+document.getElementById("submitReply").onclick=()=>{
+  const msg=document.getElementById("replyInput").value.trim();
+  saveResponse("YES",msg);
+  document.getElementById("modal").classList.add("hidden");
+  renderFinal("YES",msg);
+};
+
+/* ---------------- NO BUTTON DODGE ---------------- */
+document.addEventListener("mousemove",e=>run(e.clientX,e.clientY));
+document.addEventListener("touchmove",e=>{
+  const t=e.touches[0]; run(t.clientX,t.clientY);
+},{passive:true});
+
+function run(x,y){
+  const no=document.getElementById("no");
+  if(!no) return;
+  const r=no.getBoundingClientRect();
+  if(Math.hypot(x-(r.left+r.width/2),y-(r.top+r.height/2))<70){
+    no.style.transform=`translate(${Math.random()*200-100}px,${Math.random()*160-80}px)`;
+  }
+}
 </script>
 
 </body>
