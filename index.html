@@ -3,51 +3,51 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>This Moment 💖</title>
+<title>This Moment</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
 *{ -webkit-tap-highlight-color:transparent }
 
-/* ===== LOVE ANIMATIONS ===== */
-@keyframes softFade {
-  from{opacity:0; transform:translateY(20px)}
+/* ===== CINEMATIC EFFECTS ===== */
+@keyframes rise {
+  from{opacity:0; transform:translateY(30px)}
   to{opacity:1; transform:none}
 }
 @keyframes glow {
-  0%,100%{ box-shadow:0 0 40px rgba(255,90,150,.35) }
-  50%{ box-shadow:0 0 90px rgba(255,90,150,.6) }
+  0%,100%{ box-shadow:0 0 30px rgba(255,120,160,.25) }
+  50%{ box-shadow:0 0 80px rgba(255,120,160,.45) }
+}
+@keyframes float {
+  0%,100%{ transform:translateY(0) }
+  50%{ transform:translateY(-14px) }
 }
 @keyframes heartPop {
   from{ transform:scale(.3); opacity:1 }
   to{ transform:scale(2); opacity:0 }
 }
-@keyframes float {
-  0%,100%{ transform:translateY(0) }
-  50%{ transform:translateY(-12px) }
-}
 
-.fade{ animation:softFade .8s ease forwards }
+.fade{ animation:rise .9s ease forwards }
 .glow{ animation:glow 6s ease-in-out infinite }
-.float{ animation:float 6s ease-in-out infinite }
+.float{ animation:float 7s ease-in-out infinite }
 
 .heart{
   position:fixed;
-  font-size:26px;
+  font-size:24px;
   animation:heartPop 1.1s ease forwards;
   pointer-events:none;
 }
 </style>
 </head>
 
-<body class="min-h-screen bg-gradient-to-br from-rose-100 via-pink-100 to-white flex items-center justify-center overflow-hidden">
+<body class="min-h-screen bg-gradient-to-br from-neutral-50 via-rose-50 to-white flex items-center justify-center overflow-hidden">
 
-<!-- soft glow -->
-<div class="absolute -top-40 -left-40 w-[400px] h-[400px] bg-pink-300/40 blur-3xl rounded-full float"></div>
-<div class="absolute -bottom-40 -right-40 w-[420px] h-[420px] bg-rose-200/40 blur-3xl rounded-full float"></div>
+<!-- ambient welcome -->
+<div class="absolute -top-40 -left-40 w-[420px] h-[420px] bg-rose-200/40 blur-3xl rounded-full float"></div>
+<div class="absolute -bottom-40 -right-40 w-[420px] h-[420px] bg-pink-200/40 blur-3xl rounded-full float"></div>
 
-<!-- romantic music -->
+<!-- romantic background audio -->
 <audio id="bgMusic" loop muted>
   <source src="https://cdn.pixabay.com/download/audio/2022/10/16/audio_8c3a8f2f98.mp3">
 </audio>
@@ -55,7 +55,7 @@
 <!-- APP -->
 <div class="relative z-10 w-full max-w-md mx-auto px-4">
   <div id="card"
-    class="bg-white/85 backdrop-blur-xl rounded-[28px] p-8 text-center glow fade">
+    class="bg-white/85 backdrop-blur-xl rounded-[30px] p-8 text-center glow fade">
   </div>
 </div>
 
@@ -63,37 +63,37 @@
 <div id="modal"
  class="fixed inset-0 hidden items-center justify-center bg-black/50 z-40 px-4">
   <div class="bg-white rounded-[26px] p-6 w-full max-w-md fade">
-    <h2 class="text-2xl font-semibold text-pink-500 text-center">
-      A few honest words 💌
+    <h2 class="text-xl font-semibold text-gray-800 text-center">
+      Say it the way you feel
     </h2>
 
-    <p class="mt-3 text-sm text-gray-600 text-center leading-relaxed">
-      No expectations.  
-      No labels.  
-      Just what feels real in this moment.
+    <p class="mt-3 text-sm text-gray-500 text-center leading-relaxed">
+      No expectations.<br>
+      No pressure.<br>
+      Just honesty.
     </p>
 
-    <div class="mt-4 bg-pink-50 rounded-2xl p-4">
+    <div class="mt-4 bg-neutral-100 rounded-2xl p-4">
       <textarea id="reply"
         class="w-full bg-transparent outline-none resize-none text-sm"
         rows="4"
-        placeholder="Write from the heart…"></textarea>
+        placeholder="Write what feels right in this moment…"></textarea>
     </div>
 
     <button id="save"
-      class="mt-5 w-full py-3 rounded-xl bg-gradient-to-r from-pink-400 to-rose-500 text-white font-semibold shadow-md active:scale-95">
-      Keep this moment 💖
+      class="mt-5 w-full py-3 rounded-xl bg-gradient-to-r from-rose-400 to-pink-500 text-white font-semibold shadow-md active:scale-95">
+      Save this moment
     </button>
   </div>
 </div>
 
 <script>
-/* ========= CONFIG (SAME LOGIC) ========= */
+/* ========= CONFIG (LOGIC SAME) ========= */
 const BIN_ID="69809848ae596e708f0b60cd";
 const API_KEY="$2a$10$SWRs0c4zsOCWZY5mPavGI.CFoLPsZilAUB1XKFEUU7r0kcOJ9jPSC";
 const BASE_URL=`https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
-/* ========= NAME + DEVICE ========= */
+/* ========= NAME & DEVICE ========= */
 const p=new URLSearchParams(location.search);
 const name=(p.get("query")||"You").replace(/^\w/,c=>c.toUpperCase());
 
@@ -111,7 +111,7 @@ function startMusic(){
   music.play();
   let v=0;
   const i=setInterval(()=>{
-    v+=0.05;
+    v+=0.04;
     music.volume=Math.min(v,0.6);
     if(v>=0.6) clearInterval(i);
   },200);
@@ -142,42 +142,43 @@ function renderStart(){
 card.innerHTML=`
 <h1 class="text-3xl font-semibold text-gray-800">${name}</h1>
 
-<p class="mt-5 text-lg text-gray-700 leading-relaxed">
-Some connections don’t arrive with noise.<br>
-They arrive softly…<br>
-and somehow feel like home.
+<p class="mt-6 text-lg text-gray-700 leading-relaxed">
+This isn’t about promises.<br>
+It’s about intention.
 </p>
 
-<p class="mt-6 text-xl font-medium text-gray-900">
-If I asked you to choose this feeling with me —
+<p class="mt-5 text-gray-700 leading-relaxed">
+About choosing to explore something real,<br>
+without rushing it,<br>
+without complicating it.
 </p>
 
-<p class="mt-2 text-sm text-gray-600">
-not forever, not promises… just this moment —
+<p class="mt-6 text-lg text-gray-900 font-medium">
+So here’s a simple question —
 </p>
 
-<p class="mt-2 text-sm text-gray-600">
-what would you choose?
+<p class="mt-2 text-gray-600">
+Would you like to choose this moment with me?
 </p>
 
 <div class="mt-8 flex justify-center gap-4">
 <button id="yes"
- class="px-7 py-3 rounded-full bg-gradient-to-r from-pink-400 to-rose-500 text-white text-sm font-semibold shadow-lg active:scale-95">
-Yes 💖
+ class="px-7 py-3 rounded-full bg-gradient-to-r from-rose-400 to-pink-500 text-white text-sm font-semibold shadow-lg active:scale-95">
+Yes
 </button>
 
 <button id="no"
  class="px-4 py-2 rounded-full bg-gray-200 text-gray-700 text-xs">
-No 🙈
+No
 </button>
 </div>
 
 <p class="mt-6 text-xs text-gray-500">
-This moment is safe 🤍
+No pressure. Just clarity.
 </p>
 
 <footer class="mt-6 text-[11px] text-gray-400">
-with love, for love ❤️ — Ujjwal
+with love, for love ❤️
 </footer>
 `;
 
@@ -190,24 +191,24 @@ modal.classList.add("flex");
 
 function renderFinal(msg){
 card.innerHTML=`
-<h1 class="text-4xl">💖✨💖</h1>
+<h1 class="text-3xl">✨</h1>
 
-<p class="mt-5 text-lg text-gray-800 leading-relaxed">
+<p class="mt-6 text-lg text-gray-800 leading-relaxed">
 You chose this moment.<br>
-And that choice… means more than you know.
+That choice is enough.
 </p>
 
-<blockquote class="mt-6 italic text-gray-700 border-l-4 border-pink-400 pl-4">
+<blockquote class="mt-6 italic text-gray-700 border-l-4 border-rose-400 pl-4">
 "${msg}"
 </blockquote>
 
 <p class="mt-6 text-sm text-gray-500">
-Some moments don’t fade.<br>
-They stay.
+Let’s see where this goes —
+calmly, honestly.
 </p>
 
 <footer class="mt-6 text-[11px] text-gray-400">
-with love, for love ❤️ — Ujjwal
+with love, for love ❤️
 </footer>
 `;
 }
@@ -223,10 +224,10 @@ document.getElementById("save").onclick=async()=>{
 
 /* ========= HEARTS ========= */
 function burst(){
-  for(let i=0;i<24;i++){
+  for(let i=0;i<22;i++){
     const h=document.createElement("div");
     h.className="heart";
-    h.innerText="💖";
+    h.innerText="❤️";
     h.style.left=Math.random()*100+"vw";
     h.style.top=Math.random()*100+"vh";
     document.body.appendChild(h);
