@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-<title>Just One Question</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<title>Just One Honest Question</title>
 
 <style>
 *{box-sizing:border-box}
-
+:root{
+  --bg1:#ff6aa2;
+  --bg2:#7b7bff;
+  --glass:rgba(255,255,255,.14);
+}
 body{
   margin:0;
   min-height:100svh;
@@ -16,31 +20,28 @@ body{
   justify-content:center;
   font-family:system-ui,-apple-system,"Poppins";
   background:
-    radial-gradient(70% 50% at 20% 10%, #ff4d9d55, transparent),
-    radial-gradient(60% 50% at 80% 90%, #7b4dff55, transparent),
-    #06060c;
+    radial-gradient(70% 60% at 15% 10%, #ff6aa266, transparent),
+    radial-gradient(60% 60% at 85% 90%, #7b7bff66, transparent),
+    #0a0a12;
   color:#fff;
   padding:14px;
   overflow:hidden;
 }
-
 .card{
   width:100%;
   max-width:380px;
-  padding:26px 20px 28px;
+  padding:24px 20px 26px;
   border-radius:28px;
-  background:rgba(255,255,255,.12);
+  background:var(--glass);
   backdrop-filter:blur(22px);
-  box-shadow:0 30px 90px rgba(0,0,0,.6);
+  box-shadow:0 30px 90px rgba(0,0,0,.55);
   text-align:center;
   animation:enter .7s ease;
 }
-
 @keyframes enter{
-  from{opacity:0;transform:translateY(16px) scale(.96)}
+  from{opacity:0;transform:translateY(14px) scale(.96)}
   to{opacity:1;transform:none}
 }
-
 h1{
   margin:0 0 6px;
   font-size:28px;
@@ -49,35 +50,29 @@ h1{
   -webkit-background-clip:text;
   color:transparent;
 }
-
-.emoji-line{
+.emojis{
   font-size:22px;
-  margin:10px 0 6px;
+  margin:8px 0 6px;
 }
-
 p{
   font-size:15.2px;
   line-height:1.6;
-  margin:0 0 12px;
+  margin:0 0 10px;
 }
-
 .question{
   font-size:18px;
   font-weight:600;
   margin:10px 0 6px;
 }
-
 .hint{
   font-size:13.2px;
-  opacity:.82;
-  margin-bottom:18px;
+  opacity:.85;
+  margin-bottom:16px;
 }
-
 .btns{
   display:flex;
   gap:12px;
 }
-
 button{
   flex:1;
   padding:14px 0;
@@ -86,44 +81,39 @@ button{
   border-radius:22px;
   cursor:pointer;
 }
-
 #yes{
-  background:linear-gradient(135deg,#ff2f7d,#ff8fd1);
+  background:linear-gradient(135deg,#ff3b7f,#ff9ad6);
   color:#fff;
-  box-shadow:0 14px 40px rgba(255,47,125,.55);
+  box-shadow:0 14px 40px rgba(255,59,127,.55);
 }
-
 #no{
   background:rgba(255,255,255,.25);
   color:#fff;
   position:relative;
 }
-
 button:active{transform:scale(.96)}
-
-.small-text{
-  margin-top:10px;
-  font-size:12.8px;
-  opacity:.75;
+.small{
+  margin-top:8px;
+  font-size:12.6px;
+  opacity:.78;
 }
 
 /* AFTER YES */
 .final h1{font-size:34px}
 .final p{font-size:15.8px}
-
 .gif{
   width:100%;
   max-height:240px;
   object-fit:cover;
   border-radius:18px;
-  margin-top:18px;
+  margin-top:16px;
 }
 
-/* floating emoji burst */
+/* emoji burst */
 .pop{
   position:absolute;
   font-size:22px;
-  animation:popUp 2.8s ease forwards;
+  animation:popUp 2.6s ease forwards;
   pointer-events:none;
 }
 @keyframes popUp{
@@ -138,18 +128,17 @@ button:active{transform:scale(.96)}
 <div class="card" id="card">
   <h1 id="name"></h1>
 
-  <div class="emoji-line">✨ 🤍 💫</div>
+  <div class="emojis">✨ 🤍 💫 🫶</div>
 
   <p id="intro"></p>
 
   <div class="question">
-    I like you. Not casually.  
-    I mean… intentionally.
+    I like you—calmly, clearly, and with intention.
   </div>
 
   <div class="hint">
-    If you feel the same, choose yes.  
-    If not, that’s okay too.
+    Choose yes if you feel it too.  
+    Choose no if you don’t. Both are respected.
   </div>
 
   <div class="btns">
@@ -157,9 +146,7 @@ button:active{transform:scale(.96)}
     <button id="no">No</button>
   </div>
 
-  <div class="small-text">
-    No pressure. Just honesty.
-  </div>
+  <div class="small">No pressure. Just honesty.</div>
 </div>
 
 <script>
@@ -170,20 +157,20 @@ const name=raw.charAt(0).toUpperCase()+raw.slice(1).toLowerCase();
 
 document.getElementById("name").innerText=name;
 document.getElementById("intro").innerHTML=
-  `Hey ${name},<br>this is simple. real. and meant.`;
+  `Hey ${name},<br>this is simple, sincere, and real.`;
 
-/* ===== NO BUTTON (MOBILE SAFE, PROXIMITY) ===== */
+/* ===== NO BUTTON (MOBILE-SAFE PROXIMITY) ===== */
 const no=document.getElementById("no");
 function near(x,y){
   const r=no.getBoundingClientRect();
   return Math.hypot(
     x-(r.left+r.width/2),
     y-(r.top+r.height/2)
-  )<70;
+  )<68;
 }
 function run(){
   no.style.transform=
-    `translate(${Math.random()*160-80}px,${Math.random()*120-60}px)`;
+    `translate(${Math.random()*150-75}px,${Math.random()*110-55}px)`;
 }
 document.addEventListener("mousemove",e=>{ if(near(e.clientX,e.clientY)) run(); });
 document.addEventListener("touchmove",e=>{
@@ -191,7 +178,7 @@ document.addEventListener("touchmove",e=>{
   if(near(t.clientX,t.clientY)) run();
 },{passive:true});
 
-/* ===== YES CLICK: TAGDA MOMENT ===== */
+/* ===== YES → JOY MOMENT ===== */
 const hugGifs=[
  "https://media.giphy.com/media/l2QDM9Jnim1YVILXa/giphy.gif",
  "https://media.giphy.com/media/od5H3PmEG5EVq/giphy.gif",
@@ -200,31 +187,30 @@ const hugGifs=[
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 
 document.getElementById("yes").onclick=()=>{
-  burstEmojis();
+  burst();
   document.getElementById("card").innerHTML=`
     <div class="final">
       <h1>🤍</h1>
       <p>
         ${name},<br><br>
-        then I’m in.<br>
-        fully. honestly. for the long run.
+        then let’s choose each other—<br>
+        gently, honestly, and for the long run.
       </p>
       <img class="gif" src="${pick(hugGifs)}">
     </div>
   `;
 };
 
-/* emoji burst */
-function burstEmojis(){
+function burst(){
   const arr=["🤍","✨","💫","🫶","💖"];
   for(let i=0;i<14;i++){
     const e=document.createElement("div");
     e.className="pop";
     e.innerText=arr[Math.floor(Math.random()*arr.length)];
     e.style.left=Math.random()*100+"vw";
-    e.style.bottom="20vh";
+    e.style.bottom="18vh";
     document.body.appendChild(e);
-    setTimeout(()=>e.remove(),2800);
+    setTimeout(()=>e.remove(),2600);
   }
 }
 </script>
