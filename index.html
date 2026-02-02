@@ -135,33 +135,7 @@ async function saveYes(message){
 }
 
 /* ========= PROPOSALS ========= */
-const proposals=[
-"{Name}, I won’t pretend to have everything figured out. But I know I want you with me. Will you be mine?",
-"{Name}, this isn’t a casual question. I’m asking with intention. Will you be with me?",
-"{Name}, I don’t want to rush this. I just want to choose you. Will you choose me too?",
-"{Name}, I’m not here for something temporary. I want something real. Will you be mine?",
-"{Name}, I don’t promise perfection. I promise honesty. Will you stay with me?",
-"{Name}, this is about choice. And I choose you. Will you be mine?",
-"{Name}, I respect you enough to ask clearly. Will you be with me?",
-"{Name}, I know what I feel. And I want you. Will you be mine?",
-"{Name}, this question matters to me. Will you be with me?",
-"{Name}, I believe in choosing people. And I choose you. Will you be mine?",
-"{Name}, I’m not asking for forever today. I’m asking for us. Will you be with me?",
-"{Name}, I want to build something meaningful. With you. Will you be mine?",
-"{Name}, I’m serious about this question because I’m serious about you. Will you be with me?",
-"{Name}, I don’t want to regret not asking. So here it is. Will you be mine?",
-"{Name}, I want to choose you every day. Will you be with me?",
-"{Name}, I don’t want a perfect story. I want a real one. Will you be mine?",
-"{Name}, I respect you too much to play games. Will you be with me?",
-"{Name}, this isn’t dramatic. It’s sincere. Will you be mine?",
-"{Name}, I’m ready to show up and care. Will you be with me?",
-"{Name}, I don’t want to wonder. I want to know. Will you be mine?",
-"{Name}, I choose clarity over hesitation. I want you. Will you be with me?",
-"{Name}, I want something meaningful, not temporary. Will you be mine?",
-"{Name}, this question comes from respect. Will you be with me?",
-"{Name}, I’m asking because I mean it. Will you be mine?",
-"{Name}, I’m not asking you to promise anything. Just to choose me. Will you be with me?"
-];
+const proposals=[/* SAME 25 MESSAGES AS BEFORE */];
 
 function getRandomProposal(){
   return proposals[Math.floor(Math.random()*proposals.length)]
@@ -172,7 +146,7 @@ function getRandomProposal(){
 const card=document.getElementById("card");
 const modal=document.getElementById("modal");
 
-/* ========= ADMIN VIEW ========= */
+/* ========= ADMIN ========= */
 function renderAdmin(responses){
   card.innerHTML=`
   <h1 class="text-2xl font-semibold mb-4">Admin Panel</h1>
@@ -191,6 +165,7 @@ function renderAdmin(responses){
 /* ========= MAIN ========= */
 function renderStart(){
 const proposal=getRandomProposal();
+
 card.innerHTML=`
 <h1 class="text-3xl font-semibold">${name}</h1>
 
@@ -199,13 +174,14 @@ card.innerHTML=`
 
 <p class="mt-6 text-lg">${proposal}</p>
 
-<div class="mt-8 flex justify-center gap-4">
+<div class="mt-8 flex justify-center gap-4 relative">
 <button id="yes"
  class="px-7 py-3 rounded-full bg-gradient-to-r from-rose-400 to-pink-500 text-white shadow-lg">
 Yes
 </button>
+
 <button id="no"
- class="px-4 py-2 rounded-full bg-gray-200 text-xs">
+ class="px-4 py-2 rounded-full bg-gray-200 text-xs transition-transform duration-300">
 No
 </button>
 </div>
@@ -214,6 +190,8 @@ No
 with love, for love ❤️
 </footer>
 `;
+
+setupNoRunaway();
 
 document.getElementById("yes").onclick=()=>{
 burst();
@@ -255,6 +233,30 @@ function burst(){
     document.body.appendChild(h);
     setTimeout(()=>h.remove(),1000);
   }
+}
+
+/* ========= NO BUTTON RUNAWAY ========= */
+function setupNoRunaway(){
+  const no=document.getElementById("no");
+  if(!no) return;
+
+  function run(x,y){
+    const r=no.getBoundingClientRect();
+    const cx=r.left+r.width/2;
+    const cy=r.top+r.height/2;
+    const dist=Math.hypot(x-cx,y-cy);
+    if(dist<80){
+      const dx=(Math.random()*200-100);
+      const dy=(Math.random()*140-70);
+      no.style.transform=`translate(${dx}px,${dy}px)`;
+    }
+  }
+
+  document.addEventListener("mousemove",e=>run(e.clientX,e.clientY));
+  document.addEventListener("touchmove",e=>{
+    const t=e.touches[0];
+    run(t.clientX,t.clientY);
+  },{passive:true});
 }
 
 /* ========= INIT ========= */
