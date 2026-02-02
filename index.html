@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-<title>A Question</title>
+<title>Just One Question</title>
 
 <style>
 *{box-sizing:border-box}
@@ -16,8 +16,8 @@ body{
   justify-content:center;
   font-family:system-ui,-apple-system,"Poppins";
   background:
-    radial-gradient(70% 50% at 20% 10%, #ff4d9d66, transparent),
-    radial-gradient(60% 50% at 80% 90%, #7b4dff66, transparent),
+    radial-gradient(70% 50% at 20% 10%, #ff4d9d55, transparent),
+    radial-gradient(60% 50% at 80% 90%, #7b4dff55, transparent),
     #06060c;
   color:#fff;
   padding:14px;
@@ -42,12 +42,17 @@ body{
 }
 
 h1{
-  margin:0 0 8px;
+  margin:0 0 6px;
   font-size:28px;
   font-weight:700;
   background:linear-gradient(135deg,#ffd6eb,#ffffff);
   -webkit-background-clip:text;
   color:transparent;
+}
+
+.emoji-line{
+  font-size:22px;
+  margin:10px 0 6px;
 }
 
 p{
@@ -56,23 +61,14 @@ p{
   margin:0 0 12px;
 }
 
-.hero{
-  width:100%;
-  max-height:220px;
-  object-fit:cover;
-  border-radius:18px;
-  margin:12px 0 16px;
-  box-shadow:0 18px 50px rgba(0,0,0,.45);
-}
-
 .question{
   font-size:18px;
   font-weight:600;
-  margin-bottom:6px;
+  margin:10px 0 6px;
 }
 
-.sub{
-  font-size:13.5px;
+.hint{
+  font-size:13.2px;
   opacity:.82;
   margin-bottom:18px;
 }
@@ -103,6 +99,15 @@ button{
   position:relative;
 }
 
+button:active{transform:scale(.96)}
+
+.small-text{
+  margin-top:10px;
+  font-size:12.8px;
+  opacity:.75;
+}
+
+/* AFTER YES */
 .final h1{font-size:34px}
 .final p{font-size:15.8px}
 
@@ -114,19 +119,17 @@ button{
   margin-top:18px;
 }
 
-/* subtle floating dots (cool extra) */
-.dot{
+/* floating emoji burst */
+.pop{
   position:absolute;
-  width:6px;height:6px;border-radius:50%;
-  background:#fff3;
-  animation:float 6s linear infinite;
+  font-size:22px;
+  animation:popUp 2.8s ease forwards;
+  pointer-events:none;
 }
-@keyframes float{
-  from{transform:translateY(110vh)}
-  to{transform:translateY(-10vh)}
+@keyframes popUp{
+  from{transform:translateY(0);opacity:1}
+  to{transform:translateY(-120px);opacity:0}
 }
-
-button:active{transform:scale(.96)}
 </style>
 </head>
 
@@ -134,69 +137,43 @@ button:active{transform:scale(.96)}
 
 <div class="card" id="card">
   <h1 id="name"></h1>
+
+  <div class="emoji-line">✨ 🤍 💫</div>
+
   <p id="intro"></p>
 
-  <!-- BEFORE YES: PROPOSAL / COOL ONLY -->
-  <img class="hero" id="heroGif" alt="moment">
-
   <div class="question">
-    Do you choose me — for what comes next?
+    I like you. Not casually.  
+    I mean… intentionally.
   </div>
 
-  <div class="sub">
-    Yes = you want me in your life.<br>
-    No = you don’t feel the same.
+  <div class="hint">
+    If you feel the same, choose yes.  
+    If not, that’s okay too.
   </div>
 
   <div class="btns">
     <button id="yes">Yes</button>
     <button id="no">No</button>
   </div>
+
+  <div class="small-text">
+    No pressure. Just honesty.
+  </div>
 </div>
 
 <script>
-/* ================= NAME (query param) ================= */
+/* ===== NAME (query param) ===== */
 const params=new URLSearchParams(location.search);
 const raw=params.get("query")||"You";
 const name=raw.charAt(0).toUpperCase()+raw.slice(1).toLowerCase();
 
 document.getElementById("name").innerText=name;
 document.getElementById("intro").innerHTML=
-  `Hey ${name},<br>quiet confidence. honest intent.`;
+  `Hey ${name},<br>this is simple. real. and meant.`;
 
-/* ================= GIF LISTS ================= */
-/* BEFORE YES: ONE COOL PROPOSAL + MANY PROPOSAL/ASKING (NO HUG/KISS) */
-const coolProposal =
-  "https://media.giphy.com/media/xUPGcguWZHRC2HyBRS/giphy.gif"; // cool standout
-
-const proposalGifs=[
-  "https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif",
-  "https://media.giphy.com/media/3oriO6qJiXajN0TyDu/giphy.gif",
-  "https://media.giphy.com/media/l4FGpP4lxGGgK5CBW/giphy.gif",
-  "https://media.giphy.com/media/26BRrSvJUa0crqw4E/giphy.gif",
-  "https://media.giphy.com/media/5GoVLqeAOo6PK/giphy.gif"
-];
-
-/* AFTER YES: LOTS OF HUGS / KISSES / DANCE (ROMANTIC) */
-const afterYesGifs=[
-  "https://media.giphy.com/media/l2QDM9Jnim1YVILXa/giphy.gif",
-  "https://media.giphy.com/media/od5H3PmEG5EVq/giphy.gif",
-  "https://media.giphy.com/media/HaC1WdpkL3W00/giphy.gif",
-  "https://media.giphy.com/media/gnXG2hODaCOru/giphy.gif",
-  "https://media.giphy.com/media/3oEjI4sFlp73fvEYgw/giphy.gif",
-  "https://media.giphy.com/media/12hvLuZ7uzvCvK/giphy.gif",
-  "https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif"
-];
-
-const pick=a=>a[Math.floor(Math.random()*a.length)];
-
-/* Load BEFORE YES: mix cool + proposal */
-const hero=document.getElementById("heroGif");
-hero.src = Math.random()<0.35 ? coolProposal : pick(proposalGifs);
-
-/* ================= NO BUTTON (PROXIMITY, MOBILE SAFE) ================= */
+/* ===== NO BUTTON (MOBILE SAFE, PROXIMITY) ===== */
 const no=document.getElementById("no");
-
 function near(x,y){
   const r=no.getBoundingClientRect();
   return Math.hypot(
@@ -214,30 +191,42 @@ document.addEventListener("touchmove",e=>{
   if(near(t.clientX,t.clientY)) run();
 },{passive:true});
 
-/* ================= YES CLICK (AFTER YES ONLY) ================= */
+/* ===== YES CLICK: TAGDA MOMENT ===== */
+const hugGifs=[
+ "https://media.giphy.com/media/l2QDM9Jnim1YVILXa/giphy.gif",
+ "https://media.giphy.com/media/od5H3PmEG5EVq/giphy.gif",
+ "https://media.giphy.com/media/HaC1WdpkL3W00/giphy.gif"
+];
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+
 document.getElementById("yes").onclick=()=>{
+  burstEmojis();
   document.getElementById("card").innerHTML=`
     <div class="final">
       <h1>🤍</h1>
       <p>
         ${name},<br><br>
-        then stay.<br>
-        calm. real. together.
+        then I’m in.<br>
+        fully. honestly. for the long run.
       </p>
-      <img class="gif" src="${pick(afterYesGifs)}">
+      <img class="gif" src="${pick(hugGifs)}">
     </div>
   `;
 };
 
-/* ================= COOL EXTRA: FLOATING DOTS ================= */
-setInterval(()=>{
-  const d=document.createElement("div");
-  d.className="dot";
-  d.style.left=Math.random()*100+"vw";
-  d.style.animationDuration=4+Math.random()*4+"s";
-  document.body.appendChild(d);
-  setTimeout(()=>d.remove(),8000);
-},520);
+/* emoji burst */
+function burstEmojis(){
+  const arr=["🤍","✨","💫","🫶","💖"];
+  for(let i=0;i<14;i++){
+    const e=document.createElement("div");
+    e.className="pop";
+    e.innerText=arr[Math.floor(Math.random()*arr.length)];
+    e.style.left=Math.random()*100+"vw";
+    e.style.bottom="20vh";
+    document.body.appendChild(e);
+    setTimeout(()=>e.remove(),2800);
+  }
+}
 </script>
 
 </body>
