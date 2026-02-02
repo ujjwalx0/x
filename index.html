@@ -109,19 +109,56 @@ button:active{transform:scale(.95)}
   font-weight:600;
 }
 
+/* NO BUTTON — ULTRA FAST DODGE FEEL (CSS ONLY) */
 #no{
   background:#1f1f3f;
   color:#fff;
   position:relative;
+
+  /* remove mobile delay */
+  touch-action: manipulation;
+
+  /* lightning-fast motion */
+  transition:
+    transform 0.04s linear,
+    opacity 0.04s linear;
+
+  will-change: transform;
 }
+
+/* DESKTOP: cursor paas aate hi bhagna jaisa FEEL */
+#no:hover{
+  transform: translateX(22px) translateY(-18px) scale(0.92);
+}
+
+/* MOBILE: finger touch hone se pehle hi react */
+#no:active{
+  transform: translateX(-26px) translateY(22px) scale(0.88);
+}
+
+/* MOBILE DEVICES — EVEN FASTER */
 @media (pointer: coarse){
   #no{
     transition:
-      transform 0.04s linear,
-      left 0.04s linear,
-      top 0.04s linear;
+      transform 0.03s linear,
+      opacity 0.03s linear;
+  }
+
+  #no:active{
+    transform: translateX(34px) translateY(-28px) scale(0.85);
   }
 }
+
+/* OPTIONAL: micro shake to fake randomness */
+@keyframes panic{
+  0%{transform:translate(0,0) scale(1)}
+  100%{transform:translate(18px,-14px) scale(.9)}
+}
+
+#no:focus-visible{
+  animation:panic .05s linear infinite alternate;
+}
+
 
 .small{
   margin-top:10px;
