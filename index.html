@@ -1,51 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
 <title>This Moment</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
-
-<style>
-*{ -webkit-tap-highlight-color:transparent }
-
-/* ===== CINEMATIC EFFECTS ===== */
-@keyframes rise {
-  from{opacity:0; transform:translateY(30px)}
-  to{opacity:1; transform:none}
-}
-@keyframes glow {
-  0%,100%{ box-shadow:0 0 30px rgba(255,120,160,.25) }
-  50%{ box-shadow:0 0 80px rgba(255,120,160,.45) }
-}
-@keyframes float {
-  0%,100%{ transform:translateY(0) }
-  50%{ transform:translateY(-14px) }
-}
-@keyframes heartPop {
-  from{ transform:scale(.3); opacity:1 }
-  to{ transform:scale(2); opacity:0 }
-}
-
-.fade{ animation:rise .9s ease forwards }
-.glow{ animation:glow 6s ease-in-out infinite }
-.float{ animation:float 7s ease-in-out infinite }
-
-.heart{
-  position:fixed;
-  font-size:24px;
-  animation:heartPop 1.1s ease forwards;
-  pointer-events:none;
-}
-</style>
+<link rel="stylesheet" href="style.css" />
 </head>
 
 <body class="min-h-screen bg-gradient-to-br from-neutral-50 via-rose-50 to-white flex items-center justify-center overflow-hidden">
 
 <!-- ambient -->
-<div class="absolute -top-40 -left-40 w-[420px] h-[420px] bg-rose-200/40 blur-3xl rounded-full float"></div>
-<div class="absolute -bottom-40 -right-40 w-[420px] h-[420px] bg-pink-200/40 blur-3xl rounded-full float"></div>
+<div class="ambient a1"></div>
+<div class="ambient a2"></div>
 
 <!-- audio -->
 <audio id="bgMusic" loop muted>
@@ -54,235 +22,23 @@
 
 <!-- APP -->
 <div class="relative z-10 w-full max-w-md mx-auto px-4">
-  <div id="card"
-    class="bg-white/85 backdrop-blur-xl rounded-[30px] p-8 text-center glow fade">
-  </div>
+  <div id="card" class="card"></div>
 </div>
 
 <!-- MODAL -->
-<div id="modal"
- class="fixed inset-0 hidden items-center justify-center bg-black/50 z-40 px-4">
-  <div class="bg-white rounded-[26px] p-6 w-full max-w-md fade">
-    <h2 class="text-xl font-semibold text-gray-800 text-center">
-      Say it honestly
-    </h2>
-
-    <p class="mt-3 text-sm text-gray-500 text-center leading-relaxed">
-      No pressure. No performance. Just what you feel.
+<div id="modal" class="modal hidden">
+  <div class="modal-box">
+    <h2 class="title">Say it honestly</h2>
+    <p class="sub">
+      No pressure. No performance.<br>Just what you feel.
     </p>
 
-    <div class="mt-4 bg-neutral-100 rounded-2xl p-4">
-      <textarea id="reply"
-        class="w-full bg-transparent outline-none resize-none text-sm"
-        rows="4"
-        placeholder="Write what feels right…"></textarea>
-    </div>
+    <textarea id="reply" rows="4" placeholder="Write what feels right…"></textarea>
 
-    <button id="save"
-      class="mt-5 w-full py-3 rounded-xl bg-gradient-to-r from-rose-400 to-pink-500 text-white font-semibold shadow-md active:scale-95">
-      Save this moment
-    </button>
+    <button id="save">Save this moment</button>
   </div>
 </div>
 
-<script>
-/* ========= CONFIG ========= */
-const BIN_ID="69809848ae596e708f0b60cd";
-const API_KEY="$2a$10$SWRs0c4zsOCWZY5mPavGI.CFoLPsZilAUB1XKFEUU7r0kcOJ9jPSC";
-const BASE_URL=`https://api.jsonbin.io/v3/b/${BIN_ID}`;
-
-/* ========= PARAMS ========= */
-const p=new URLSearchParams(location.search);
-const isAdmin=p.get("admin")==="1";
-const name=(p.get("query")||"You").replace(/^\w/,c=>c.toUpperCase());
-
-/* ========= DEVICE ========= */
-let deviceId=localStorage.getItem("device_id");
-if(!deviceId){
-  deviceId=crypto.randomUUID();
-  localStorage.setItem("device_id",deviceId);
-}
-
-/* ========= AUDIO ========= */
-const music=document.getElementById("bgMusic");
-function startMusic(){
-  music.muted=false;
-  music.volume=0;
-  music.play();
-  let v=0;
-  const i=setInterval(()=>{
-    v+=0.04;
-    music.volume=Math.min(v,0.6);
-    if(v>=0.6) clearInterval(i);
-  },200);
-}
-document.addEventListener("click",startMusic,{once:true});
-document.addEventListener("touchstart",startMusic,{once:true});
-
-/* ========= JSONBIN ========= */
-async function getData(){
-  const r=await fetch(BASE_URL,{headers:{ "X-Access-Key":API_KEY }});
-  return (await r.json()).record;
-}
-async function saveYes(message){
-  const data=await getData();
-  data.responses.push({name,deviceId,message,time:new Date().toISOString()});
-  await fetch(BASE_URL,{
-    method:"PUT",
-    headers:{ "Content-Type":"application/json","X-Access-Key":API_KEY },
-    body:JSON.stringify(data)
-  });
-}
-
-/* ========= PROPOSALS ========= */
-const proposals=[/* SAME 25 MESSAGES AS BEFORE */];
-
-function getRandomProposal(){
-  return proposals[Math.floor(Math.random()*proposals.length)]
-    .replace("{Name}",name);
-}
-
-/* ========= UI ========= */
-const card=document.getElementById("card");
-const modal=document.getElementById("modal");
-
-/* ========= ADMIN ========= */
-function renderAdmin(responses){
-  card.innerHTML=`
-  <h1 class="text-2xl font-semibold mb-4">Admin Panel</h1>
-  <div class="space-y-3 max-h-[65vh] overflow-y-auto text-left">
-    ${responses.map(r=>`
-      <div class="p-4 bg-rose-50 rounded-xl">
-        <p class="text-sm font-semibold">${r.name}</p>
-        <p class="text-sm italic mt-1">"${r.message}"</p>
-        <p class="text-[11px] text-gray-400 mt-1">${new Date(r.time).toLocaleString()}</p>
-      </div>
-    `).join("")}
-  </div>
-  `;
-}
-
-/* ========= MAIN ========= */
-function renderStart(){
-const proposal=getRandomProposal();
-
-card.innerHTML=`
-<h1 class="text-3xl font-semibold">${name}</h1>
-
-<img class="mt-5 rounded-2xl shadow-md mx-auto"
- src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif" />
-
-<p class="mt-6 text-lg">${proposal}</p>
-
-<div class="mt-8 flex justify-center gap-4 relative">
-<button id="yes"
- class="px-7 py-3 rounded-full bg-gradient-to-r from-rose-400 to-pink-500 text-white shadow-lg">
-Yes
-</button>
-
-<button id="no"
- class="px-4 py-2 rounded-full bg-gray-200 text-xs transition-transform duration-300">
-No
-</button>
-</div>
-
-<footer class="mt-6 text-[11px] text-gray-400">
-with love, for love ❤️
-</footer>
-`;
-
-setupNoRunaway();
-
-document.getElementById("yes").onclick=()=>{
-burst();
-modal.classList.remove("hidden");
-modal.classList.add("flex");
-};
-}
-
-function renderFinal(msg){
-card.innerHTML=`
-<h1 class="text-3xl">✨</h1>
-<p class="mt-6 text-lg">You chose this moment.</p>
-<blockquote class="mt-6 italic border-l-4 border-rose-400 pl-4">
-"${msg}"
-</blockquote>
-<footer class="mt-6 text-[11px] text-gray-400">
-with love, for love ❤️
-</footer>
-`;
-}
-
-/* ========= SAVE ========= */
-document.getElementById("save").onclick=async()=>{
-  const msg=document.getElementById("reply").value.trim();
-  if(!msg) return;
-  await saveYes(msg);
-  modal.classList.add("hidden");
-  renderFinal(msg);
-};
-
-/* ========= HEARTS ========= */
-function burst(){
-  for(let i=0;i<20;i++){
-    const h=document.createElement("div");
-    h.className="heart";
-    h.innerText="❤️";
-    h.style.left=Math.random()*100+"vw";
-    h.style.top=Math.random()*100+"vh";
-    document.body.appendChild(h);
-    setTimeout(()=>h.remove(),1000);
-  }
-}
-
-/* ========= NO BUTTON RUNAWAY ========= */
-function setupNoRunaway(){
-  const no=document.getElementById("no");
-  if(!no) return;
-
-  function run(x,y){
-    const r=no.getBoundingClientRect();
-    const cx=r.left+r.width/2;
-    const cy=r.top+r.height/2;
-    const dist=Math.hypot(x-cx,y-cy);
-    if(dist<80){
-      const dx=(Math.random()*200-100);
-      const dy=(Math.random()*140-70);
-      no.style.transform=`translate(${dx}px,${dy}px)`;
-    }
-  }
-
-  document.addEventListener("mousemove",e=>run(e.clientX,e.clientY));
-  document.addEventListener("touchmove",e=>{
-    const t=e.touches[0];
-    run(t.clientX,t.clientY);
-  },{passive:true});
-}
-
-/* ========= INIT ========= */
-(async()=>{
-  const data=await getData();
-
-  if(isAdmin){
-    const pwd=prompt("Enter admin password");
-    if(pwd==="mild"){
-      renderAdmin(data.responses);
-    }else{
-      card.innerHTML="<p class='text-red-500'>Access denied</p>";
-    }
-    return;
-  }
-
-  const existing=[...data.responses].reverse()
-    .find(r=>r.name===name && r.deviceId===deviceId);
-
-  if(existing){
-    renderFinal(existing.message);
-  }else{
-    renderStart();
-  }
-})();
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
