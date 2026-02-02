@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Will You Be Mine 💖</title>
+<title>A Question That Matters</title>
 
 <style>
 *{box-sizing:border-box}
@@ -14,65 +14,64 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  font-family:"Poppins",system-ui;
+  font-family:system-ui,-apple-system,"Poppins";
   background:
-    radial-gradient(circle at top left,#ff3d81,transparent 45%),
-    radial-gradient(circle at bottom right,#6a00ff,transparent 45%),
-    #0a0a14;
+    radial-gradient(60% 60% at 20% 10%, #ff4d9d44, transparent),
+    radial-gradient(50% 50% at 80% 90%, #7b4dff44, transparent),
+    #07070d;
   overflow:hidden;
-  padding:16px;
+  padding:18px;
+  color:#fff;
 }
 
 .card{
   width:100%;
   max-width:420px;
-  padding:36px 26px 40px;
-  border-radius:32px;
-  background:rgba(255,255,255,0.14);
-  backdrop-filter:blur(22px);
-  box-shadow:0 45px 120px rgba(0,0,0,.6);
-  color:#fff;
+  padding:38px 26px 42px;
+  border-radius:34px;
+  background:rgba(255,255,255,.10);
+  backdrop-filter:blur(26px);
+  box-shadow:0 50px 140px rgba(0,0,0,.65);
   text-align:center;
-  animation:pop .7s ease;
+  animation:enter .7s ease;
 }
 
-@keyframes pop{
-  from{transform:scale(.9);opacity:0}
-  to{transform:scale(1);opacity:1}
+@keyframes enter{
+  from{transform:translateY(20px) scale(.96);opacity:0}
+  to{transform:none;opacity:1}
 }
 
 h1{
-  margin:0 0 12px;
-  font-size:38px;
+  margin:0 0 14px;
+  font-size:34px;
   font-weight:700;
-  background:linear-gradient(135deg,#ff9bd5,#ffffff);
+  background:linear-gradient(135deg,#ffd6eb,#ffffff);
   -webkit-background-clip:text;
   color:transparent;
 }
 
 p{
-  font-size:16.8px;
+  font-size:16.6px;
   line-height:1.7;
   opacity:.96;
 }
 
-.hero-gif{
+.hero{
   width:100%;
-  border-radius:20px;
-  margin:16px 0 20px;
+  border-radius:22px;
+  margin:18px 0 22px;
 }
 
 .question{
   margin:18px 0 8px;
-  font-size:22px;
+  font-size:21px;
   font-weight:600;
 }
 
-.subline{
-  font-size:15px;
-  opacity:.88;
-  margin-bottom:24px;
-  font-style:italic;
+.meaning{
+  font-size:14.5px;
+  opacity:.82;
+  margin-bottom:26px;
 }
 
 .btns{
@@ -83,44 +82,45 @@ p{
 button{
   flex:1;
   padding:17px 0;
-  font-size:17px;
+  font-size:16.8px;
   border:none;
-  border-radius:24px;
+  border-radius:26px;
   cursor:pointer;
 }
 
 #yes{
   background:linear-gradient(135deg,#ff2f7d,#ff8fd1);
   color:#fff;
-  box-shadow:0 18px 45px rgba(255,47,125,.6);
+  box-shadow:0 18px 50px rgba(255,47,125,.55);
 }
 
 #no{
-  background:rgba(255,255,255,.25);
+  background:rgba(255,255,255,.22);
   color:#fff;
   position:relative;
 }
 
-/* emojis */
-.emoji{
-  position:absolute;
-  font-size:22px;
-  animation:float 6s linear infinite;
-  pointer-events:none;
-}
-
-@keyframes float{
-  from{transform:translateY(110vh);opacity:1}
-  to{transform:translateY(-10vh);opacity:0}
-}
-
-.final h1{font-size:46px}
-.final p{font-size:18px}
+.final h1{font-size:42px}
+.final p{font-size:17.8px}
 
 .gif{
   width:100%;
-  border-radius:20px;
-  margin-top:22px;
+  border-radius:22px;
+  margin-top:24px;
+}
+
+/* floating minimal particles */
+.dot{
+  position:absolute;
+  width:6px;height:6px;
+  border-radius:50%;
+  background:#fff3;
+  animation:float 6s linear infinite;
+}
+
+@keyframes float{
+  from{transform:translateY(110vh)}
+  to{transform:translateY(-10vh)}
 }
 </style>
 </head>
@@ -132,95 +132,88 @@ button{
 
   <p id="intro"></p>
 
-  <!-- PROPOSAL GIF -->
-  <img class="hero-gif"
-    src="https://media.giphy.com/media/l2QDM9Jnim1YVILXa/giphy.gif"
-    alt="proposal">
+  <!-- PROPOSAL MOMENT -->
+  <img class="hero"
+    src="https://media.giphy.com/media/xUPGcguWZHRC2HyBRS/giphy.gif"
+    alt="moment">
 
   <div class="question">
-    Will you be mine, today and forever? 💍
+    Do you choose me — not just now, but for the long run?
   </div>
 
-  <div class="subline">
-    Not just for Valentine’s Day… but for every ordinary & extraordinary moment ❤️
+  <div class="meaning">
+    Yes = “I want you in my life.”  
+    <br>No = “I don’t feel that way.”
   </div>
 
   <div class="btns">
-    <button id="yes">Yes 🤍</button>
-    <button id="no">No 🙈</button>
+    <button id="yes">Yes, I choose you</button>
+    <button id="no">No, I don’t</button>
   </div>
 </div>
 
 <script>
-/* ===== NAME FROM QUERY PARAM ===== */
-const params = new URLSearchParams(window.location.search);
-const rawName = params.get("name") || "You";
+/* ===== NAME FROM URL ===== */
+const params=new URLSearchParams(location.search);
+const raw=params.get("name")||"You";
+const name=raw.charAt(0).toUpperCase()+raw.slice(1).toLowerCase();
 
-const cleanName =
-  rawName.charAt(0).toUpperCase() + rawName.slice(1).toLowerCase();
+document.getElementById("name").innerText=name;
+document.getElementById("intro").innerHTML=
+  `Hey ${name},<br>
+   this isn’t about a moment.<br>
+   It’s about intention.`;
 
-document.getElementById("name").innerText = cleanName + " 💖";
-document.getElementById("intro").innerHTML =
-  `Hey ${cleanName},<br>
-   there’s something I’ve been wanting to ask you for a long time…`;
+/* ===== NO BUTTON (ONLY WHEN CLOSE) ===== */
+const no=document.getElementById("no");
 
-/* ===== NO BUTTON (PROXIMITY BASED) ===== */
-const noBtn = document.getElementById("no");
-
-function dist(x1,y1,x2,y2){
-  return Math.hypot(x1-x2,y1-y2);
-}
-
-function checkNear(x,y){
-  const r=noBtn.getBoundingClientRect();
+function near(x,y){
+  const r=no.getBoundingClientRect();
   const cx=r.left+r.width/2;
   const cy=r.top+r.height/2;
+  return Math.hypot(x-cx,y-cy)<85;
+}
 
-  if(dist(x,y,cx,cy)<90){
-    const nx=Math.random()*260-130;
-    const ny=Math.random()*180-90;
-    noBtn.style.transform=`translate(${nx}px,${ny}px)`;
-  }
+function run(){
+  const x=Math.random()*260-130;
+  const y=Math.random()*180-90;
+  no.style.transform=`translate(${x}px,${y}px)`;
 }
 
 document.addEventListener("mousemove",e=>{
-  checkNear(e.clientX,e.clientY);
+  if(near(e.clientX,e.clientY)) run();
 });
 document.addEventListener("touchmove",e=>{
   const t=e.touches[0];
-  checkNear(t.clientX,t.clientY);
+  if(near(t.clientX,t.clientY)) run();
 });
 
-/* ===== YES CLICK (HUG MOMENT) ===== */
+/* ===== YES CLICK (LIFETIME HUG) ===== */
 document.getElementById("yes").onclick=()=>{
   document.getElementById("card").innerHTML=`
     <div class="final">
-      <h1>🤗</h1>
+      <h1>🤍</h1>
       <p>
-        ${cleanName},<br><br>
-        come here… this hug is for you 🤍<br>
-        you just turned a simple moment into something unforgettable ✨<br><br>
-        Happy Valentine’s — not just today, but always 💫
+        ${name},<br><br>
+        then come here.<br>
+        this hug isn’t loud — it’s real 🤍<br><br>
+        let’s stay.
       </p>
-
       <img class="gif"
-        src="https://media.giphy.com/media/od5H3PmEG5EVq/giphy.gif"
-        alt="hug">
+        src="https://media.giphy.com/media/l2QDM9Jnim1YVILXa/giphy.gif">
     </div>
   `;
 };
 
-/* ===== FLOATING EMOJIS ===== */
-const emojis=["🤍","💖","✨","💫","🌸"];
+/* ===== FLOATING DOTS ===== */
 setInterval(()=>{
-  const e=document.createElement("div");
-  e.className="emoji";
-  e.innerText=emojis[Math.floor(Math.random()*emojis.length)];
-  e.style.left=Math.random()*100+"vw";
-  e.style.animationDuration=3+Math.random()*3+"s";
-  document.body.appendChild(e);
-  setTimeout(()=>e.remove(),7000);
-},360);
+  const d=document.createElement("div");
+  d.className="dot";
+  d.style.left=Math.random()*100+"vw";
+  d.style.animationDuration=4+Math.random()*4+"s";
+  document.body.appendChild(d);
+  setTimeout(()=>d.remove(),8000);
+},500);
 </script>
 
 </body>
