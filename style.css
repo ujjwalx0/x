@@ -1,0 +1,80 @@
+*{ -webkit-tap-highlight-color:transparent }
+
+@keyframes rise{
+  from{opacity:0; transform:translateY(30px)}
+  to{opacity:1; transform:none}
+}
+@keyframes glow{
+  0%,100%{ box-shadow:0 0 30px rgba(255,120,160,.25) }
+  50%{ box-shadow:0 0 80px rgba(255,120,160,.45) }
+}
+@keyframes float{
+  0%,100%{ transform:translateY(0) }
+  50%{ transform:translateY(-14px) }
+}
+@keyframes heartPop{
+  from{ transform:scale(.3); opacity:1 }
+  to{ transform:scale(2); opacity:0 }
+}
+
+.card{
+  background:rgba(255,255,255,.85);
+  backdrop-filter:blur(14px);
+  border-radius:30px;
+  padding:32px;
+  text-align:center;
+  animation:rise .8s ease forwards, glow 6s ease-in-out infinite;
+}
+
+.ambient{
+  position:absolute;
+  width:420px;
+  height:420px;
+  border-radius:50%;
+  filter:blur(80px);
+  animation:float 7s ease-in-out infinite;
+}
+.a1{ top:-160px; left:-160px; background:rgba(255,180,200,.4); }
+.a2{ bottom:-160px; right:-160px; background:rgba(255,160,200,.4); }
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.5);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:50;
+}
+.modal-box{
+  background:#fff;
+  border-radius:26px;
+  padding:24px;
+  width:100%;
+  max-width:380px;
+  animation:rise .5s ease forwards;
+}
+.modal textarea{
+  width:100%;
+  margin-top:16px;
+  padding:12px;
+  border-radius:14px;
+  background:#f3f3f3;
+  outline:none;
+}
+.modal button{
+  margin-top:18px;
+  width:100%;
+  padding:12px;
+  border-radius:14px;
+  background:linear-gradient(to right,#fb7185,#ec4899);
+  color:#fff;
+  font-weight:600;
+}
+
+.heart{
+  position:fixed;
+  font-size:24px;
+  animation:heartPop 1s ease forwards;
+  pointer-events:none;
+}
