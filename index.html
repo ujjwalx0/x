@@ -1,182 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>For You</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Just For You 💖</title>
 
 <style>
-  * { box-sizing: border-box; }
+*{box-sizing:border-box}
 
-  body {
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(160deg, #ff6a88, #ff99ac);
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    overflow: hidden;
-    padding: 16px;
-  }
+body{
+  margin:0;
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family: "Poppins", system-ui;
+  background:
+    radial-gradient(circle at top, #ff5fa2, transparent 40%),
+    radial-gradient(circle at bottom, #7f00ff, transparent 45%),
+    #0d0d16;
+  overflow:hidden;
+  padding:16px;
+}
 
-  /* floating hearts */
-  .heart {
-    position: absolute;
-    font-size: 18px;
-    animation: floatUp 6s linear infinite;
-    opacity: 0.8;
-    pointer-events: none;
-  }
+/* floating emojis */
+.emoji{
+  position:absolute;
+  font-size:22px;
+  animation:float 7s linear infinite;
+  pointer-events:none;
+}
 
-  @keyframes floatUp {
-    from { transform: translateY(110vh); opacity: 1; }
-    to { transform: translateY(-10vh); opacity: 0; }
-  }
+@keyframes float{
+  from{transform:translateY(110vh);opacity:1}
+  to{transform:translateY(-10vh);opacity:0}
+}
 
-  .card {
-    width: 100%;
-    max-width: 360px;
-    background: rgba(255,255,255,0.98);
-    border-radius: 24px;
-    padding: 28px 22px 32px;
-    text-align: center;
-    box-shadow: 0 28px 60px rgba(0,0,0,0.25);
-    animation: pop 0.7s ease;
-    position: relative;
-    z-index: 2;
-  }
+.card{
+  width:100%;
+  max-width:380px;
+  padding:28px 24px 32px;
+  border-radius:26px;
+  background:rgba(255,255,255,0.12);
+  backdrop-filter:blur(16px);
+  box-shadow:0 30px 80px rgba(0,0,0,0.4);
+  color:#fff;
+  text-align:center;
+  animation:pop .7s ease;
+}
 
-  @keyframes pop {
-    0% { transform: scale(0.9); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
-  }
+@keyframes pop{
+  from{transform:scale(.9);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
 
-  h1 {
-    margin: 0 0 14px;
-    font-size: 26px;
-    color: #ff2f68;
-    font-weight: 700;
-  }
+h1{
+  margin:0 0 12px;
+  font-size:30px;
+  font-weight:700;
+  background:linear-gradient(135deg,#ff9bd5,#fff);
+  -webkit-background-clip:text;
+  color:transparent;
+}
 
-  p {
-    font-size: 16.5px;
-    color: #333;
-    line-height: 1.55;
-    margin-bottom: 24px;
-  }
+p{
+  font-size:16px;
+  line-height:1.6;
+  opacity:.95;
+}
 
-  .question {
-    font-size: 18px;
-    font-weight: 600;
-    color: #ff2f68;
-    margin-bottom: 26px;
-  }
+.question{
+  margin:26px 0;
+  font-size:18px;
+  font-weight:600;
+}
 
-  .btns {
-    display: flex;
-    gap: 14px;
-    justify-content: center;
-  }
+.btns{
+  display:flex;
+  gap:14px;
+}
 
-  button {
-    flex: 1;
-    padding: 14px 0;
-    font-size: 17px;
-    border: none;
-    border-radius: 16px;
-    cursor: pointer;
-    transition: transform 0.15s ease;
-  }
+button{
+  flex:1;
+  padding:14px 0;
+  font-size:17px;
+  border:none;
+  border-radius:18px;
+  cursor:pointer;
+  transition:.15s ease;
+}
 
-  button:active {
-    transform: scale(0.95);
-  }
+button:active{transform:scale(.94)}
 
-  #yes {
-    background: linear-gradient(135deg, #ff2f68, #ff8fb1);
-    color: white;
-    box-shadow: 0 10px 25px rgba(255,47,104,0.4);
-  }
+#yes{
+  background:linear-gradient(135deg,#ff3d81,#ff8fd1);
+  color:#fff;
+  box-shadow:0 12px 30px rgba(255,61,129,.5);
+}
 
-  #no {
-    background: #e8e8e8;
-    color: #555;
-    position: relative;
-  }
+#no{
+  background:rgba(255,255,255,.25);
+  color:#fff;
+  position:relative;
+}
 
-  .final h1 {
-    font-size: 28px;
-    margin-bottom: 14px;
-  }
+.final h1{
+  font-size:42px;
+}
 
-  .final p {
-    font-size: 18px;
-    color: #ff2f68;
-    line-height: 1.6;
-  }
+.final p{
+  font-size:18px;
+}
 </style>
 </head>
 
 <body>
 
 <div class="card" id="card">
-  <h1>Nilisha</h1>
+  <h1 id="name">You</h1>
 
   <p>
-    I like the way things feel when you are around.  
-    It is calm, easy, and real.  
-    That matters to me.
+    Jab tum paas hoti ho,<br>
+    duniya thodi zyada hi achhi lagti hai ✨
   </p>
 
   <div class="question">
-    Would you like to be with me?
+    Kya tum mere saath chalogi? 💫
   </div>
 
   <div class="btns">
-    <button id="yes">Yes 🙂</button>
-    <button id="no">No 😌</button>
+    <button id="yes">Yes 😍</button>
+    <button id="no">No 🙈</button>
   </div>
 </div>
 
 <script>
-  const card = document.getElementById("card");
-  const noBtn = document.getElementById("no");
-  const yesBtn = document.getElementById("yes");
+/* ========= DATA OBJECT ========= */
+const girls = {
+  ns: { name: "Nilisha" },
+  ap: { name: "Aarohi" },
+  kv: { name: "Kavya" },
+  sn: { name: "Sneha" }
+};
 
-  // playful NO movement but stays visible
-  function moveNo() {
-    noBtn.style.transform = "translateX(" + (Math.random() * 40 - 20) + "px)";
-  }
+/* ========= URL NAME LOAD ========= */
+const params = new URLSearchParams(window.location.search);
+const key = params.get("k");
+const girlName = girls[key]?.name || "Someone Special";
+document.getElementById("name").innerText = girlName;
 
-  noBtn.addEventListener("mouseover", moveNo);
-  noBtn.addEventListener("touchstart", moveNo);
+/* ========= BUTTON LOGIC ========= */
+const noBtn = document.getElementById("no");
+const yesBtn = document.getElementById("yes");
+const card = document.getElementById("card");
 
-  yesBtn.addEventListener("click", () => {
-    card.innerHTML = `
-      <div class="final">
-        <h1>❤️</h1>
-        <p>
-          That means a lot to me, Nilisha.  
-          Truly. 😊<br><br>
-          I am really happy you said yes.  
-          Let us take this one step at a time,  
-          together 💫
-        </p>
-      </div>
-    `;
-  });
+function runAway(){
+  const x = Math.random()*240 - 120;
+  const y = Math.random()*160 - 80;
+  noBtn.style.transform = `translate(${x}px,${y}px)`;
+}
 
-  // floating hearts effect
-  setInterval(() => {
-    const h = document.createElement("div");
-    h.className = "heart";
-    h.innerText = "❤️";
-    h.style.left = Math.random() * 100 + "vw";
-    h.style.animationDuration = (4 + Math.random() * 3) + "s";
-    document.body.appendChild(h);
-    setTimeout(() => h.remove(), 7000);
-  }, 500);
+noBtn.addEventListener("mouseenter", runAway);
+noBtn.addEventListener("touchstart", runAway);
+
+yesBtn.addEventListener("click", ()=>{
+  card.innerHTML = `
+    <div class="final">
+      <h1>💖</h1>
+      <p>
+        ${girlName},<br><br>
+        tumhara YES mere liye sabse cute moment hai 😭✨<br><br>
+        Ab toh yeh kahani shuru ho chuki hai 💫
+      </p>
+    </div>
+  `;
+});
+
+/* ========= FLOATING EMOJIS ========= */
+const emojis = ["💖","✨","💘","😍","💫"];
+setInterval(()=>{
+  const e = document.createElement("div");
+  e.className="emoji";
+  e.innerText = emojis[Math.floor(Math.random()*emojis.length)];
+  e.style.left=Math.random()*100+"vw";
+  e.style.animationDuration=4+Math.random()*4+"s";
+  document.body.appendChild(e);
+  setTimeout(()=>e.remove(),8000);
+},450);
 </script>
 
 </body>
