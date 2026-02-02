@@ -1,158 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>One Real Feeling</title>
 
-<style>
-*{box-sizing:border-box}
-html,body{margin:0;padding:0}
+<!-- TAILWIND CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
 
-:root{
-  --bg:#0b0b14;
-  --card:#151527;
-  --primary:#ff5fa2;
-  --secondary:#ff9bd5;
-  --soft:#ffd9ec;
-}
-
-body{
-  min-height:100svh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-family:system-ui,-apple-system,"Poppins";
-  background:
-    radial-gradient(70% 50% at 15% 10%, #ff5fa255, transparent),
-    radial-gradient(60% 50% at 85% 90%, #ff9bd555, transparent),
-    var(--bg);
-  color:#fff;
-  padding:14px;
-}
-
-.card{
-  width:100%;
-  max-width:390px;
-  background:linear-gradient(180deg,#1a1a33,#111125);
-  border-radius:30px;
-  padding:26px 22px 28px;
-  box-shadow:0 35px 120px rgba(0,0,0,.7);
-  text-align:center;
-}
-
-/* TEXT */
-h1{margin:0;font-size:30px;color:var(--primary)}
-.emojis{font-size:24px;margin:10px 0}
-p{font-size:15.6px;line-height:1.65;color:var(--soft)}
-.question{font-size:19px;font-weight:600;margin:8px 0}
-.hint{font-size:13.4px;color:#ffc0dd;margin-bottom:16px}
-
-/* BUTTONS */
-.btns{display:flex;gap:12px}
-button{
-  flex:1;
-  padding:14px 0;
-  font-size:15px;
-  border:none;
-  border-radius:22px;
-  cursor:pointer;
-}
-
-#yes{
-  background:linear-gradient(135deg,var(--primary),var(--secondary));
-  color:#2a0014;
-  font-weight:600;
-}
-
-#no{
-  flex:.55;
-  font-size:13px;
-  background:#1f1f3f;
-  color:#fff;
-  touch-action:manipulation;
-  transition:transform .03s linear;
-  will-change:transform;
-}
-
-.small{font-size:12px;color:#ffb6d5;margin-top:10px}
-
-/* FINAL */
-.final p{font-size:16px;color:#ffe4f1}
-textarea{
-  width:100%;
-  padding:12px;
-  border-radius:12px;
-  border:none;
-  margin-top:12px;
-  font-size:14px;
-}
-.save-btn{
-  margin-top:14px;
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:14px;
-  background:linear-gradient(135deg,#ff5fa2,#ff9bd5);
-  color:#2a0014;
-  font-weight:600;
-}
-.gif{
-  width:100%;
-  border-radius:18px;
-  margin-top:16px;
-}
-</style>
 </head>
+<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-500/30 via-purple-500/20 to-black text-white">
 
-<body>
-
-<div class="card" id="card">
-  <h1 id="name"></h1>
-  <div class="emojis">💖 🤍 💫</div>
-  <p id="intro"></p>
-
-  <div class="question">
-    I don’t feel this way about everyone.<br>
-    I feel it about you.
-  </div>
-
-  <div class="hint">
-    If you feel the same, choose yes.<br>
-    If not, choose no.
-  </div>
-
-  <div class="btns">
-    <button id="yes">Yes</button>
-    <button id="no">No</button>
-  </div>
-
-  <div class="small">Take your time. Be honest.</div>
+<div id="card" class="w-full max-w-md mx-4 rounded-3xl bg-white/10 backdrop-blur-xl p-6 shadow-2xl text-center">
 </div>
 
 <script>
-/* CONFIG */
-const BIN_ID="69809848ae596e708f0b60cd";
-const API_KEY="$2a$10$SWRs0c4zsOCWZY5mPavGI.CFoLPsZilAUB1XKFEUU7r0kcOJ9jPSC";
-const BASE_URL=`https://api.jsonbin.io/v3/b/${BIN_ID}`;
+/* ---------------- CONFIG ---------------- */
+const BIN_ID = "69809848ae596e708f0b60cd";
+const API_KEY = "$2a$10$SWRs0c4zsOCWZY5mPavGI.CFoLPsZilAUB1XKFEUU7r0kcOJ9jPSC";
+const BASE_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
-/* NAME */
-const params=new URLSearchParams(location.search);
-const raw=params.get("query")||"You";
-const name=raw.charAt(0).toUpperCase()+raw.slice(1).toLowerCase();
-document.getElementById("name").innerText=name;
-document.getElementById("intro").innerHTML=
-  `Hey ${name},<br>this little space is just for you.`;
+/* ---------------- NAME ---------------- */
+const params = new URLSearchParams(location.search);
+const raw = params.get("query") || "You";
+const name = raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase();
 
-/* HELPERS */
+/* ---------------- STATE ---------------- */
+const answeredKey = "answered_" + name;
+const canEdit = sessionStorage.getItem("can_edit_" + name);
+
+/* ---------------- HELPERS ---------------- */
 async function getData(){
-  const r=await fetch(BASE_URL,{headers:{"X-Access-Key":API_KEY}});
+  const r = await fetch(BASE_URL,{headers:{ "X-Access-Key":API_KEY }});
   return (await r.json()).record;
 }
+
 async function saveResponse(choice,message=""){
-  const data=await getData();
+  const data = await getData();
   data.responses.push({
-    name,choice,message,
+    name,
+    choice,
+    message,
     time:new Date().toISOString()
   });
   await fetch(BASE_URL,{
@@ -163,75 +51,103 @@ async function saveResponse(choice,message=""){
     },
     body:JSON.stringify(data)
   });
+
+  localStorage.setItem(answeredKey,"true");
+  sessionStorage.setItem("can_edit_" + name,"false");
 }
 
-/* EXISTING RESPONSE */
-(async()=>{
-  const data=await getData();
-  const last=[...data.responses].reverse().find(r=>r.name===name);
-  if(last) showFinal(last.choice,last.message);
-})();
+/* ---------------- RENDER FUNCTIONS ---------------- */
+function renderQuestion(){
+  card.innerHTML = `
+    <h1 class="text-3xl font-bold text-pink-400">${name}</h1>
+    <p class="mt-4 text-pink-100 text-lg leading-relaxed">
+      This isn’t casual.<br>
+      This is something I feel clearly.
+    </p>
 
-/* NO DODGE */
-const no=document.getElementById("no");
-document.addEventListener("mousemove",e=>move(e.clientX,e.clientY));
-document.addEventListener("touchmove",e=>{
-  const t=e.touches[0]; move(t.clientX,t.clientY);
-},{passive:true});
-function move(x,y){
-  const r=no.getBoundingClientRect();
-  if(Math.hypot(x-(r.left+r.width/2),y-(r.top+r.height/2))<70){
-    no.style.transform=`translate(${Math.random()*220-110}px,${Math.random()*160-80}px)`;
-  }
-}
+    <p class="mt-6 text-xl font-semibold">
+      Do you feel it too?
+    </p>
 
-/* YES FLOW */
-document.getElementById("yes").onclick=()=>{
-  document.getElementById("card").innerHTML=`
-    <div class="final">
-      <h1>💖</h1>
-      <p>
-        That means something to me, ${name}.<br><br>
-        If you want, say something back.
-      </p>
-      <textarea id="reply"
-        placeholder="You can write anything here…"></textarea>
-      <button class="save-btn" id="save">Save my answer</button>
+    <div class="mt-6 flex gap-3">
+      <button id="yes" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-rose-400 text-black font-semibold">
+        Yes
+      </button>
+      <button id="no" class="flex-[0.6] py-3 rounded-xl bg-white/20 text-white">
+        No
+      </button>
     </div>
+
+    <p class="mt-4 text-sm text-pink-200">
+      Take your time. Be honest.
+    </p>
   `;
-  document.getElementById("save").onclick=()=>{
-    const msg=document.getElementById("reply").value.trim();
-    saveResponse("YES",msg);
-    showFinal("YES",msg);
+
+  document.getElementById("yes").onclick = ()=>{
+    sessionStorage.setItem("can_edit_" + name,"true");
+    renderReply();
   };
-};
 
-/* NO */
-document.getElementById("no").onclick=()=>{
-  saveResponse("NO","");
-  showFinal("NO","");
-};
+  document.getElementById("no").onclick = ()=>{
+    saveResponse("NO","");
+    renderFinal("NO","");
+  };
+}
 
-/* FINAL VIEW */
-function showFinal(choice,msg){
-  document.getElementById("card").innerHTML=`
-    <div class="final">
-      <h1>${choice==="YES"?"💖":"🤍"}</h1>
-      <p>
-        ${choice==="YES"
-          ? `You said yes, ${name}.<br>
-             And that made me really happy.`
-          : `Thank you for being honest, ${name}.`}
-        <br><br>
-        ${msg||""}
-      </p>
+function renderReply(){
+  card.innerHTML = `
+    <h1 class="text-3xl font-bold text-pink-400">💖</h1>
+    <p class="mt-4 text-lg text-pink-100">
+      That means something to me, ${name}.<br>
+      If you want, say something back.
+    </p>
+
+    <textarea id="reply"
+      class="mt-4 w-full rounded-xl p-3 text-black"
+      placeholder="Write whatever you feel…"></textarea>
+
+    <button id="save"
+      class="mt-4 w-full py-3 rounded-xl bg-gradient-to-r from-pink-500 to-rose-400 text-black font-semibold">
+      Save my response
+    </button>
+  `;
+
+  document.getElementById("save").onclick = ()=>{
+    const msg = document.getElementById("reply").value.trim();
+    saveResponse("YES",msg);
+    renderFinal("YES",msg);
+  };
+}
+
+function renderFinal(choice,msg){
+  card.innerHTML = `
+    <h1 class="text-3xl">${choice==="YES"?"💖":"🤍"}</h1>
+    <p class="mt-4 text-lg text-pink-100">
       ${choice==="YES"
-        ? `<img class="gif"
-            src="https://media.giphy.com/media/l2QDM9Jnim1YVILXa/giphy.gif">`
-        : ""}
-    </div>
+        ? `You said yes, ${name}.<br>That made me really happy.`
+        : `Thank you for being honest, ${name}.`}
+    </p>
+
+    ${msg ? `<p class="mt-4 italic text-pink-200">"${msg}"</p>` : ""}
+
+    ${choice==="YES"
+      ? `<img class="mt-6 rounded-2xl shadow-xl"
+         src="https://media.giphy.com/media/l2QDM9Jnim1YVILXa/giphy.gif">`
+      : ""}
   `;
 }
+
+/* ---------------- INIT ---------------- */
+(async ()=>{
+  const data = await getData();
+  const last = [...data.responses].reverse().find(r=>r.name===name);
+
+  if(last && !canEdit){
+    renderFinal(last.choice,last.message);
+  } else {
+    renderQuestion();
+  }
+})();
 </script>
 
 </body>
