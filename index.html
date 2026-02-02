@@ -3,76 +3,92 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
-<title>Just One Honest Question</title>
+<title>One Honest Moment</title>
 
 <style>
+/* -------------------- RESET & TOKENS -------------------- */
 *{box-sizing:border-box}
 :root{
-  --bg1:#ff6aa2;
-  --bg2:#7b7bff;
-  --glass:rgba(255,255,255,.14);
+  --bgA:#ff7ab8;
+  --bgB:#7f8cff;
+  --glass:rgba(255,255,255,.16);
+  --txt:#ffffff;
+  --muted:rgba(255,255,255,.82);
+  --radius:28px;
+  --ease:cubic-bezier(.22,.61,.36,1);
 }
+
+/* -------------------- LAYOUT -------------------- */
+html,body{height:100%}
 body{
   margin:0;
-  min-height:100svh;
   display:flex;
   align-items:center;
   justify-content:center;
   font-family:system-ui,-apple-system,"Poppins";
+  color:var(--txt);
   background:
-    radial-gradient(70% 60% at 15% 10%, #ff6aa266, transparent),
-    radial-gradient(60% 60% at 85% 90%, #7b7bff66, transparent),
-    #0a0a12;
-  color:#fff;
+    radial-gradient(70% 60% at 12% 10%, color-mix(in oklab, var(--bgA) 60%, transparent), transparent),
+    radial-gradient(60% 60% at 88% 92%, color-mix(in oklab, var(--bgB) 60%, transparent), transparent),
+    #0b0c12;
   padding:14px;
   overflow:hidden;
 }
+
+/* -------------------- CARD -------------------- */
 .card{
   width:100%;
   max-width:380px;
-  padding:24px 20px 26px;
-  border-radius:28px;
+  padding:22px 20px 24px;
+  border-radius:var(--radius);
   background:var(--glass);
   backdrop-filter:blur(22px);
-  box-shadow:0 30px 90px rgba(0,0,0,.55);
+  box-shadow:0 28px 90px rgba(0,0,0,.55);
   text-align:center;
-  animation:enter .7s ease;
+  transform:translateY(10px) scale(.98);
+  opacity:0;
+  animation:enter .8s var(--ease) forwards;
 }
-@keyframes enter{
-  from{opacity:0;transform:translateY(14px) scale(.96)}
-  to{opacity:1;transform:none}
-}
+@keyframes enter{to{transform:none;opacity:1}}
+
 h1{
   margin:0 0 6px;
   font-size:28px;
   font-weight:700;
-  background:linear-gradient(135deg,#ffd6eb,#ffffff);
+  background:linear-gradient(135deg,#ffd9ec,#ffffff);
   -webkit-background-clip:text;
   color:transparent;
 }
+
 .emojis{
   font-size:22px;
+  letter-spacing:6px;
   margin:8px 0 6px;
+  filter:drop-shadow(0 6px 18px rgba(255,255,255,.25));
 }
+
 p{
   font-size:15.2px;
   line-height:1.6;
+  color:var(--muted);
   margin:0 0 10px;
 }
+
 .question{
+  margin:10px 0 6px;
   font-size:18px;
   font-weight:600;
-  margin:10px 0 6px;
+  color:#fff;
 }
+
 .hint{
   font-size:13.2px;
-  opacity:.85;
+  opacity:.9;
   margin-bottom:16px;
 }
-.btns{
-  display:flex;
-  gap:12px;
-}
+
+/* -------------------- BUTTONS -------------------- */
+.btns{display:flex;gap:12px}
 button{
   flex:1;
   padding:14px 0;
@@ -80,25 +96,28 @@ button{
   border:none;
   border-radius:22px;
   cursor:pointer;
+  transition:transform .15s var(--ease), box-shadow .15s var(--ease);
 }
+button:active{transform:scale(.96)}
 #yes{
   background:linear-gradient(135deg,#ff3b7f,#ff9ad6);
   color:#fff;
   box-shadow:0 14px 40px rgba(255,59,127,.55);
 }
 #no{
-  background:rgba(255,255,255,.25);
+  background:rgba(255,255,255,.28);
   color:#fff;
   position:relative;
 }
-button:active{transform:scale(.96)}
+
+/* -------------------- MICRO COPY -------------------- */
 .small{
   margin-top:8px;
   font-size:12.6px;
   opacity:.78;
 }
 
-/* AFTER YES */
+/* -------------------- AFTER YES -------------------- */
 .final h1{font-size:34px}
 .final p{font-size:15.8px}
 .gif{
@@ -107,18 +126,24 @@ button:active{transform:scale(.96)}
   object-fit:cover;
   border-radius:18px;
   margin-top:16px;
+  box-shadow:0 16px 48px rgba(0,0,0,.45);
 }
 
-/* emoji burst */
-.pop{
+/* -------------------- PARTICLES (SUBTLE JOY) -------------------- */
+.spark{
   position:absolute;
-  font-size:22px;
-  animation:popUp 2.6s ease forwards;
+  font-size:18px;
   pointer-events:none;
+  animation:spark 2.6s var(--ease) forwards;
 }
-@keyframes popUp{
-  from{transform:translateY(0);opacity:1}
-  to{transform:translateY(-120px);opacity:0}
+@keyframes spark{
+  from{transform:translateY(0) scale(1);opacity:1}
+  to{transform:translateY(-120px) scale(.9);opacity:0}
+}
+
+/* -------------------- ACCESSIBILITY -------------------- */
+@media (prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important}
 }
 </style>
 </head>
@@ -150,35 +175,30 @@ button:active{transform:scale(.96)}
 </div>
 
 <script>
-/* ===== NAME (query param) ===== */
-const params=new URLSearchParams(location.search);
-const raw=params.get("query")||"You";
+/* -------------------- NAME (query param) -------------------- */
+const q=new URLSearchParams(location.search);
+const raw=q.get("query")||"You";
 const name=raw.charAt(0).toUpperCase()+raw.slice(1).toLowerCase();
-
 document.getElementById("name").innerText=name;
 document.getElementById("intro").innerHTML=
-  `Hey ${name},<br>this is simple, sincere, and real.`;
+  `Hey ${name},<br>this moment is simple, sincere, and real.`;
 
-/* ===== NO BUTTON (MOBILE-SAFE PROXIMITY) ===== */
+/* -------------------- NO BUTTON (NATURAL PROXIMITY) -------------------- */
 const no=document.getElementById("no");
 function near(x,y){
   const r=no.getBoundingClientRect();
-  return Math.hypot(
-    x-(r.left+r.width/2),
-    y-(r.top+r.height/2)
-  )<68;
+  return Math.hypot(x-(r.left+r.width/2), y-(r.top+r.height/2))<68;
 }
-function run(){
-  no.style.transform=
-    `translate(${Math.random()*150-75}px,${Math.random()*110-55}px)`;
+function dodge(){
+  no.style.transform=`translate(${Math.random()*150-75}px,${Math.random()*110-55}px)`;
 }
-document.addEventListener("mousemove",e=>{ if(near(e.clientX,e.clientY)) run(); });
+document.addEventListener("mousemove",e=>{ if(near(e.clientX,e.clientY)) dodge(); });
 document.addEventListener("touchmove",e=>{
   const t=e.touches[0];
-  if(near(t.clientX,t.clientY)) run();
+  if(near(t.clientX,t.clientY)) dodge();
 },{passive:true});
 
-/* ===== YES → JOY MOMENT ===== */
+/* -------------------- YES → DELIGHT -------------------- */
 const hugGifs=[
  "https://media.giphy.com/media/l2QDM9Jnim1YVILXa/giphy.gif",
  "https://media.giphy.com/media/od5H3PmEG5EVq/giphy.gif",
@@ -187,30 +207,30 @@ const hugGifs=[
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 
 document.getElementById("yes").onclick=()=>{
-  burst();
+  joy();
   document.getElementById("card").innerHTML=`
     <div class="final">
       <h1>🤍</h1>
       <p>
         ${name},<br><br>
         then let’s choose each other—<br>
-        gently, honestly, and for the long run.
+        gently, honestly, for the long run.
       </p>
-      <img class="gif" src="${pick(hugGifs)}">
+      <img class="gif" src="${pick(hugGifs)}" alt="warm hug">
     </div>
   `;
 };
 
-function burst(){
+function joy(){
   const arr=["🤍","✨","💫","🫶","💖"];
   for(let i=0;i<14;i++){
-    const e=document.createElement("div");
-    e.className="pop";
-    e.innerText=arr[Math.floor(Math.random()*arr.length)];
-    e.style.left=Math.random()*100+"vw";
-    e.style.bottom="18vh";
-    document.body.appendChild(e);
-    setTimeout(()=>e.remove(),2600);
+    const s=document.createElement("div");
+    s.className="spark";
+    s.innerText=arr[Math.floor(Math.random()*arr.length)];
+    s.style.left=Math.random()*100+"vw";
+    s.style.bottom="18vh";
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),2600);
   }
 }
 </script>
