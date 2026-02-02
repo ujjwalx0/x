@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>A Question That Matters</title>
+<title>A Question</title>
 
 <style>
 *{box-sizing:border-box}
@@ -16,33 +16,33 @@ body{
   justify-content:center;
   font-family:system-ui,-apple-system,"Poppins";
   background:
-    radial-gradient(60% 60% at 20% 10%, #ff4d9d44, transparent),
-    radial-gradient(50% 50% at 80% 90%, #7b4dff44, transparent),
-    #07070d;
+    radial-gradient(60% 60% at 15% 10%, #ff4d9d55, transparent),
+    radial-gradient(50% 50% at 85% 90%, #7b4dff55, transparent),
+    #06060c;
   color:#fff;
   overflow:hidden;
-  padding:18px;
+  padding:16px;
 }
 
 .card{
   width:100%;
-  max-width:430px;
+  max-width:420px;
   padding:38px 26px 42px;
   border-radius:36px;
   background:rgba(255,255,255,.10);
   backdrop-filter:blur(28px);
-  box-shadow:0 55px 150px rgba(0,0,0,.7);
+  box-shadow:0 50px 150px rgba(0,0,0,.65);
   text-align:center;
-  animation:enter .7s ease;
+  animation:enter .8s ease;
 }
 
 @keyframes enter{
-  from{opacity:0;transform:translateY(20px) scale(.96)}
+  from{opacity:0;transform:translateY(18px) scale(.96)}
   to{opacity:1;transform:none}
 }
 
 h1{
-  margin:0 0 14px;
+  margin:0 0 12px;
   font-size:34px;
   font-weight:700;
   background:linear-gradient(135deg,#ffd6eb,#ffffff);
@@ -51,7 +51,7 @@ h1{
 }
 
 p{
-  font-size:16.6px;
+  font-size:16.5px;
   line-height:1.7;
   opacity:.95;
 }
@@ -60,17 +60,18 @@ p{
   width:100%;
   border-radius:22px;
   margin:18px 0 22px;
+  box-shadow:0 20px 60px rgba(0,0,0,.45);
 }
 
 .question{
   font-size:21px;
   font-weight:600;
-  margin:16px 0 8px;
+  margin:16px 0 10px;
 }
 
-.meaning{
+.sub{
   font-size:14.5px;
-  opacity:.82;
+  opacity:.8;
   margin-bottom:26px;
 }
 
@@ -91,7 +92,7 @@ button{
 #yes{
   background:linear-gradient(135deg,#ff2f7d,#ff8fd1);
   color:#fff;
-  box-shadow:0 18px 55px rgba(255,47,125,.6);
+  box-shadow:0 18px 55px rgba(255,47,125,.55);
 }
 
 #no{
@@ -100,27 +101,13 @@ button{
   position:relative;
 }
 
-.final h1{font-size:44px}
+.final h1{font-size:42px}
 .final p{font-size:18px}
 
 .gif{
   width:100%;
   border-radius:24px;
   margin-top:26px;
-}
-
-/* floating dots */
-.dot{
-  position:absolute;
-  width:6px;height:6px;
-  border-radius:50%;
-  background:#fff3;
-  animation:float 6s linear infinite;
-}
-
-@keyframes float{
-  from{transform:translateY(110vh)}
-  to{transform:translateY(-10vh)}
 }
 </style>
 </head>
@@ -129,115 +116,106 @@ button{
 
 <div class="card" id="card">
   <h1 id="name"></h1>
-
   <p id="intro"></p>
 
+  <!-- PROPOSAL GIF (ONLY PROPOSAL PHASE) -->
   <img class="hero" id="heroGif" alt="moment">
 
   <div class="question">
-    Do you choose me — not just now, but for the long run?
+    Do you choose me — not just for now, but for what comes next?
   </div>
 
-  <div class="meaning">
-    Yes = “I want you in my life.”<br>
-    No = “I don’t feel that way.”
+  <div class="sub">
+    Yes means you want me in your life.  
+    No means you don’t feel the same.
   </div>
 
   <div class="btns">
     <button id="yes">Yes, I choose you</button>
-    <button id="no">No, I don’t</button>
+    <button id="no">No</button>
   </div>
 </div>
 
 <script>
-/* ========= NAME FROM URL ========= */
-const params = new URLSearchParams(location.search);
-const raw = params.get("name") || "You";
-const name = raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase();
+/* ========= NAME ========= */
+const params=new URLSearchParams(location.search);
+const raw=params.get("name")||"You";
+const name=raw.charAt(0).toUpperCase()+raw.slice(1).toLowerCase();
 
-document.getElementById("name").innerText = name;
-document.getElementById("intro").innerHTML =
+document.getElementById("name").innerText=name;
+document.getElementById("intro").innerHTML=
   `Hey ${name},<br>
-   this isn’t about a moment.<br>
-   It’s about intention.`;
+   this isn’t noise. This is intention.`;
 
-/* ========= GIF COLLECTIONS ========= */
+/* ========= PHASE ========= */
+let phase="proposal";
 
-/* proposal / love (first page) */
-let proposalGifs = [
+/* ========= GIF LISTS ========= */
+
+/* ONLY PROPOSAL / ASKING */
+const proposalGifs=[
   "https://media.giphy.com/media/xUPGcguWZHRC2HyBRS/giphy.gif",
-  "https://media.giphy.com/media/l0HlBO7eyXzSZkJri/giphy.gif",
   "https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif",
+  "https://media.giphy.com/media/l4FGpP4lxGGgK5CBW/giphy.gif",
   "https://media.giphy.com/media/3oriO6qJiXajN0TyDu/giphy.gif",
-  "https://media.giphy.com/media/l4FGpP4lxGGgK5CBW/giphy.gif"
+  "https://media.giphy.com/media/26BRrSvJUa0crqw4E/giphy.gif"
 ];
 
-/* hug / kiss / love (yes page) */
-let hugGifs = [
+/* ONLY HUG / LOVE (AFTER YES) */
+const hugGifs=[
   "https://media.giphy.com/media/l2QDM9Jnim1YVILXa/giphy.gif",
   "https://media.giphy.com/media/od5H3PmEG5EVq/giphy.gif",
-  "https://media.giphy.com/media/3oEjI4sFlp73fvEYgw/giphy.gif",
   "https://media.giphy.com/media/HaC1WdpkL3W00/giphy.gif",
-  "https://media.giphy.com/media/gnXG2hODaCOru/giphy.gif"
+  "https://media.giphy.com/media/gnXG2hODaCOru/giphy.gif",
+  "https://media.giphy.com/media/12hvLuZ7uzvCvK/giphy.gif"
 ];
 
 function pick(arr){
   return arr[Math.floor(Math.random()*arr.length)];
 }
 
-/* load random proposal gif */
-document.getElementById("heroGif").src = pick(proposalGifs);
+/* load proposal gif */
+const hero=document.getElementById("heroGif");
+hero.src=pick(proposalGifs);
 
-/* ========= NO BUTTON (PROXIMITY BASED) ========= */
-const no = document.getElementById("no");
+/* ========= NO BUTTON (REAL PROXIMITY) ========= */
+const no=document.getElementById("no");
 
 function near(x,y){
   const r=no.getBoundingClientRect();
   const cx=r.left+r.width/2;
   const cy=r.top+r.height/2;
-  return Math.hypot(x-cx,y-cy)<90;
+  return Math.hypot(x-cx,y-cy)<80;
 }
 
 function run(){
-  const x=Math.random()*260-130;
-  const y=Math.random()*180-90;
-  no.style.transform=`translate(${x}px,${y}px)`;
+  no.style.transform=`translate(${Math.random()*240-120}px,${Math.random()*160-80}px)`;
 }
 
 document.addEventListener("mousemove",e=>{
-  if(near(e.clientX,e.clientY)) run();
+  if(near(e.clientX,e.clientY))run();
 });
-
 document.addEventListener("touchmove",e=>{
   const t=e.touches[0];
-  if(near(t.clientX,t.clientY)) run();
+  if(near(t.clientX,t.clientY))run();
 });
 
 /* ========= YES CLICK ========= */
 document.getElementById("yes").onclick=()=>{
+  phase="accepted";
   document.getElementById("card").innerHTML=`
     <div class="final">
       <h1>🤍</h1>
       <p>
         ${name},<br><br>
-        then come here.<br>
-        this hug isn’t loud — it’s real 🤍<br><br>
-        let’s stay.
+        then stay.<br>
+        this isn’t loud — it’s real.<br><br>
+        I’m here.
       </p>
       <img class="gif" src="${pick(hugGifs)}">
     </div>
   `;
 };
-
-/* ========= FLOATING DOTS ========= */
-setInterval(()=>{
-  const d=document.createElement("div");
-  d.className="dot";
-  d.style.left=Math.random()*100+"vw";
-  d.style.animationDuration=4+Math.random()*4+"s";
-  document.body.appendChild(d);
-  setTimeout(()=>d.remove(),8000);
-},500);
 </script>
 
 </body>
