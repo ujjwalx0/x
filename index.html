@@ -5,39 +5,51 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>One Real Feeling</title>
 
+<!-- Tailwind -->
 <script src="https://cdn.tailwindcss.com"></script>
 
 </head>
-<body class="min-h-screen bg-gradient-to-br from-pink-500/30 via-purple-600/20 to-black flex items-center justify-center text-white">
+<body class="min-h-screen flex items-center justify-center bg-[radial-gradient(circle_at_top_left,rgba(255,95,162,0.35),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(255,155,213,0.35),transparent_45%),#0b0b14] text-white overflow-hidden">
 
-<div id="card" class="w-full max-w-md mx-4 rounded-3xl bg-white/10 backdrop-blur-xl p-6 shadow-2xl text-center"></div>
+<!-- MAIN CARD -->
+<div id="card"
+  class="relative w-full max-w-md mx-4 rounded-3xl bg-white/10 backdrop-blur-2xl p-7 shadow-[0_40px_140px_rgba(0,0,0,.7)] text-center">
+
+  <!-- Overlay glow text -->
+  <div class="absolute inset-0 rounded-3xl bg-gradient-to-b from-pink-500/10 to-transparent pointer-events-none"></div>
+
+</div>
 
 <!-- MODAL -->
-<div id="modal" class="fixed inset-0 hidden items-center justify-center bg-black/60 z-50">
-  <div class="bg-white text-black rounded-2xl w-11/12 max-w-md p-6 text-center">
-    <h2 class="text-2xl font-bold text-pink-500">You said yes 💖</h2>
+<div id="modal" class="fixed inset-0 hidden items-center justify-center bg-black/70 z-50">
+  <div class="bg-white text-black rounded-3xl w-11/12 max-w-md p-6 text-center shadow-2xl animate-[fadeIn_.4s_ease]">
+
+    <h2 class="text-2xl font-bold text-pink-500">You chose yes 💖</h2>
+
     <p class="mt-3 text-gray-700">
-      Would you like to say something to the one who asked?
+      Before we go further,<br>
+      would you like to say something from your heart?
     </p>
 
     <textarea id="replyInput"
-      class="mt-4 w-full p-3 border rounded-xl"
-      placeholder="Write from your heart..."></textarea>
+      class="mt-4 w-full p-3 rounded-xl border focus:outline-none focus:ring-2 focus:ring-pink-400"
+      placeholder="Write whatever feels true…"></textarea>
 
     <button id="submitReply"
-      class="mt-4 w-full py-3 rounded-xl bg-gradient-to-r from-pink-500 to-rose-400 text-black font-semibold">
+      class="mt-5 w-full py-3 rounded-xl bg-gradient-to-r from-pink-500 to-rose-400 text-black font-semibold">
       Save my words
     </button>
+
   </div>
 </div>
 
 <script>
-/* ---------------- CONFIG ---------------- */
+/* ================= CONFIG ================= */
 const BIN_ID="69809848ae596e708f0b60cd";
 const API_KEY="$2a$10$SWRs0c4zsOCWZY5mPavGI.CFoLPsZilAUB1XKFEUU7r0kcOJ9jPSC";
 const BASE_URL=`https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
-/* ---------------- IDENTITY ---------------- */
+/* ================= IDENTITY ================= */
 const params=new URLSearchParams(location.search);
 const raw=params.get("query")||"You";
 const name=raw.charAt(0).toUpperCase()+raw.slice(1).toLowerCase();
@@ -48,18 +60,18 @@ if(!deviceId){
   localStorage.setItem("device_id",deviceId);
 }
 
-/* ---------------- HELPERS ---------------- */
+/* ================= HELPERS ================= */
 async function getData(){
   const r=await fetch(BASE_URL,{headers:{ "X-Access-Key":API_KEY }});
   return (await r.json()).record;
 }
 
-async function saveResponse(choice,message=""){
+async function saveYes(message){
   const data=await getData();
   data.responses.push({
     name,
     deviceId,
-    choice,
+    choice:"YES",
     message,
     device:{
       ua:navigator.userAgent,
@@ -79,91 +91,99 @@ async function saveResponse(choice,message=""){
   localStorage.setItem("answered_"+name+"_"+deviceId,"true");
 }
 
-/* ---------------- RENDER ---------------- */
+/* ================= RENDER ================= */
 const card=document.getElementById("card");
 
-function renderQuestion(){
+function renderStart(){
   card.innerHTML=`
     <h1 class="text-3xl font-bold text-pink-400">${name}</h1>
-    <p class="mt-4 text-pink-100 text-lg">
-      This is not a casual question.<br>
-      It comes from a real place.
+
+    <div class="mt-3 text-2xl">💖 ✨ 💫</div>
+
+    <p class="mt-5 text-pink-100 text-lg leading-relaxed">
+      This is not a casual moment.<br>
+      It comes from intention, honesty,<br>
+      and a feeling I can’t ignore.
     </p>
 
     <p class="mt-6 text-xl font-semibold">
-      Would you choose this moment with me?
+      Would you choose this feeling with me?
     </p>
 
-    <div class="mt-6 flex gap-3">
+    <div class="mt-7 flex gap-3 justify-center">
       <button id="yes"
         class="flex-1 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-rose-400 text-black font-semibold">
         Yes
       </button>
+
       <button id="no"
-        class="flex-[0.6] py-3 rounded-xl bg-white/20 text-white text-sm">
+        class="flex-[0.55] py-2 rounded-xl bg-white/20 text-sm">
         No
       </button>
     </div>
 
-    <p class="mt-4 text-sm text-pink-200">
-      Take your time. Be honest.
+    <p class="mt-5 text-sm text-pink-200">
+      No pressure. Only honesty.
     </p>
+
+    <footer class="mt-6 text-[11px] text-pink-300/70">
+      Made with love, for love — by Ujjwal
+    </footer>
   `;
 
   document.getElementById("yes").onclick=()=>{
     document.getElementById("modal").classList.remove("hidden");
     document.getElementById("modal").classList.add("flex");
   };
-
-  document.getElementById("no").onclick=()=>{
-    saveResponse("NO","");
-    renderFinal("NO","");
-  };
 }
 
-function renderFinal(choice,msg){
+/* ================= FINAL ================= */
+function renderFinal(msg){
   card.innerHTML=`
-    <h1 class="text-3xl">${choice==="YES"?"💖":"🤍"}</h1>
+    <h1 class="text-3xl">💖</h1>
 
     <p class="mt-4 text-lg text-pink-100">
-      ${choice==="YES"
-        ? `You said yes, ${name}.<br>This moment will stay with me.`
-        : `Thank you for being honest, ${name}.`}
+      You said yes, ${name}.<br>
+      That means more than words.
     </p>
 
-    ${msg?`
-      <blockquote class="mt-6 italic text-pink-200 border-l-4 border-pink-400 pl-4">
-        “${msg}”
-      </blockquote>`:""}
+    <blockquote
+      class="mt-6 italic text-pink-200 border-l-4 border-pink-400 pl-4">
+      “${msg}”
+    </blockquote>
 
-    ${choice==="YES"?`
-      <img class="mt-8 rounded-2xl shadow-2xl"
-        src="https://media.giphy.com/media/l2QDM9Jnim1YVILXa/giphy.gif">`:""}
+    <img class="mt-8 rounded-2xl shadow-2xl"
+      src="https://media.giphy.com/media/l2QDM9Jnim1YVILXa/giphy.gif">
+
+    <footer class="mt-6 text-[11px] text-pink-300/70">
+      Made with love, for love — by Ujjwal
+    </footer>
   `;
 }
 
-/* ---------------- INIT ---------------- */
+/* ================= INIT ================= */
 (async()=>{
   const data=await getData();
   const existing=[...data.responses].reverse()
     .find(r=>r.name===name && r.deviceId===deviceId);
 
   if(existing){
-    renderFinal(existing.choice,existing.message);
+    renderFinal(existing.message);
   }else{
-    renderQuestion();
+    renderStart();
   }
 })();
 
-/* ---------------- MODAL SAVE ---------------- */
+/* ================= MODAL SAVE ================= */
 document.getElementById("submitReply").onclick=()=>{
   const msg=document.getElementById("replyInput").value.trim();
-  saveResponse("YES",msg);
+  if(!msg) return;
+  saveYes(msg);
   document.getElementById("modal").classList.add("hidden");
-  renderFinal("YES",msg);
+  renderFinal(msg);
 };
 
-/* ---------------- NO BUTTON DODGE ---------------- */
+/* ================= NO BUTTON = ONLY RUN ================= */
 document.addEventListener("mousemove",e=>run(e.clientX,e.clientY));
 document.addEventListener("touchmove",e=>{
   const t=e.touches[0]; run(t.clientX,t.clientY);
@@ -173,8 +193,9 @@ function run(x,y){
   const no=document.getElementById("no");
   if(!no) return;
   const r=no.getBoundingClientRect();
-  if(Math.hypot(x-(r.left+r.width/2),y-(r.top+r.height/2))<70){
-    no.style.transform=`translate(${Math.random()*200-100}px,${Math.random()*160-80}px)`;
+  if(Math.hypot(x-(r.left+r.width/2),y-(r.top+r.height/2))<80){
+    no.style.transform=
+      `translate(${Math.random()*260-130}px,${Math.random()*200-100}px)`;
   }
 }
 </script>
