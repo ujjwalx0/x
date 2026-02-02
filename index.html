@@ -43,11 +43,11 @@
 
 <body class="min-h-screen bg-gradient-to-br from-neutral-50 via-rose-50 to-white flex items-center justify-center overflow-hidden">
 
-<!-- ambient welcome -->
+<!-- ambient -->
 <div class="absolute -top-40 -left-40 w-[420px] h-[420px] bg-rose-200/40 blur-3xl rounded-full float"></div>
 <div class="absolute -bottom-40 -right-40 w-[420px] h-[420px] bg-pink-200/40 blur-3xl rounded-full float"></div>
 
-<!-- romantic background audio -->
+<!-- audio -->
 <audio id="bgMusic" loop muted>
   <source src="https://cdn.pixabay.com/download/audio/2022/10/16/audio_8c3a8f2f98.mp3">
 </audio>
@@ -59,25 +59,25 @@
   </div>
 </div>
 
-<!-- REPLY MODAL -->
+<!-- MODAL -->
 <div id="modal"
  class="fixed inset-0 hidden items-center justify-center bg-black/50 z-40 px-4">
   <div class="bg-white rounded-[26px] p-6 w-full max-w-md fade">
     <h2 class="text-xl font-semibold text-gray-800 text-center">
-      Say it the way you feel
+      Say it honestly
     </h2>
 
     <p class="mt-3 text-sm text-gray-500 text-center leading-relaxed">
-      No expectations.<br>
-      No pressure.<br>
-      Just honesty.
+      No pressure.  
+      No performance.  
+      Just what you feel.
     </p>
 
     <div class="mt-4 bg-neutral-100 rounded-2xl p-4">
       <textarea id="reply"
         class="w-full bg-transparent outline-none resize-none text-sm"
         rows="4"
-        placeholder="Write what feels right in this moment…"></textarea>
+        placeholder="Write what feels right…"></textarea>
     </div>
 
     <button id="save"
@@ -88,7 +88,7 @@
 </div>
 
 <script>
-/* ========= CONFIG (LOGIC SAME) ========= */
+/* ========= CONFIG ========= */
 const BIN_ID="69809848ae596e708f0b60cd";
 const API_KEY="$2a$10$SWRs0c4zsOCWZY5mPavGI.CFoLPsZilAUB1XKFEUU7r0kcOJ9jPSC";
 const BASE_URL=`https://api.jsonbin.io/v3/b/${BIN_ID}`;
@@ -134,31 +134,55 @@ async function saveYes(message){
   });
 }
 
+/* ========= PROPOSAL MESSAGES ========= */
+const proposals=[
+"{Name}, I won’t pretend to have everything figured out. But I know I want you with me. Will you be mine?",
+"{Name}, this isn’t a casual question. I’m asking with intention. Will you be with me?",
+"{Name}, I don’t want to rush this. I just want to choose you. Will you choose me too?",
+"{Name}, I’m not here for something temporary. I want something real. Will you be mine?",
+"{Name}, I don’t promise perfection. I promise honesty. Will you stay with me?",
+"{Name}, this is about choice. And I choose you. Will you be mine?",
+"{Name}, I respect you enough to ask clearly. Will you be with me?",
+"{Name}, I know what I feel. And I want you. Will you be mine?",
+"{Name}, this question matters to me. Will you be with me?",
+"{Name}, I believe in choosing people. And I choose you. Will you be mine?",
+"{Name}, I’m not asking for forever today. I’m asking for us. Will you be with me?",
+"{Name}, I want to build something meaningful. With you. Will you be mine?",
+"{Name}, I’m serious about this question because I’m serious about you. Will you be with me?",
+"{Name}, I don’t want to regret not asking. So here it is. Will you be mine?",
+"{Name}, I want to choose you every day. Will you be with me?",
+"{Name}, I don’t want a perfect story. I want a real one. Will you be mine?",
+"{Name}, I respect you too much to play games. Will you be with me?",
+"{Name}, this isn’t dramatic. It’s sincere. Will you be mine?",
+"{Name}, I’m ready to show up and care. Will you be with me?",
+"{Name}, I don’t want to wonder. I want to know. Will you be mine?",
+"{Name}, I choose clarity over hesitation. I want you. Will you be with me?",
+"{Name}, I want something meaningful, not temporary. Will you be mine?",
+"{Name}, this question comes from respect. Will you be with me?",
+"{Name}, I’m asking because I mean it. Will you be mine?",
+"{Name}, I’m not asking you to promise anything. Just to choose me. Will you be with me?"
+];
+
+function getRandomProposal(){
+  return proposals[Math.floor(Math.random()*proposals.length)]
+    .replace("{Name}",name);
+}
+
 /* ========= UI ========= */
 const card=document.getElementById("card");
 const modal=document.getElementById("modal");
 
 function renderStart(){
+const proposal=getRandomProposal();
+
 card.innerHTML=`
 <h1 class="text-3xl font-semibold text-gray-800">${name}</h1>
 
+<img class="mt-5 rounded-2xl shadow-md mx-auto"
+ src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif" />
+
 <p class="mt-6 text-lg text-gray-700 leading-relaxed">
-This isn’t about promises.<br>
-It’s about intention.
-</p>
-
-<p class="mt-5 text-gray-700 leading-relaxed">
-About choosing to explore something real,<br>
-without rushing it,<br>
-without complicating it.
-</p>
-
-<p class="mt-6 text-lg text-gray-900 font-medium">
-So here’s a simple question —
-</p>
-
-<p class="mt-2 text-gray-600">
-Would you like to choose this moment with me?
+${proposal}
 </p>
 
 <div class="mt-8 flex justify-center gap-4">
@@ -194,17 +218,18 @@ card.innerHTML=`
 <h1 class="text-3xl">✨</h1>
 
 <p class="mt-6 text-lg text-gray-800 leading-relaxed">
-You chose this moment.<br>
-That choice is enough.
+You chose this moment.
 </p>
 
 <blockquote class="mt-6 italic text-gray-700 border-l-4 border-rose-400 pl-4">
 "${msg}"
 </blockquote>
 
+<img class="mt-6 rounded-2xl shadow-md mx-auto"
+ src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" />
+
 <p class="mt-6 text-sm text-gray-500">
-Let’s see where this goes —
-calmly, honestly.
+Let’s see where this goes — calmly, honestly.
 </p>
 
 <footer class="mt-6 text-[11px] text-gray-400">
