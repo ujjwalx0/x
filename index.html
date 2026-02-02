@@ -6,11 +6,9 @@
 <title>One Real Feeling</title>
 
 <style>
-/* ---------- RESET ---------- */
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
 
-/* ---------- THEME ---------- */
 :root{
   --bg:#0b0b14;
   --card:#151527;
@@ -35,7 +33,6 @@ body{
   overflow:hidden;
 }
 
-/* ---------- CARD ---------- */
 .card{
   width:100%;
   max-width:380px;
@@ -44,64 +41,25 @@ body{
   padding:26px 22px 28px;
   box-shadow:0 35px 120px rgba(0,0,0,.7);
   text-align:center;
-  animation:appear .8s cubic-bezier(.22,.61,.36,1) forwards;
 }
 
-@keyframes appear{
-  from{opacity:0;transform:translateY(22px) scale(.95)}
-  to{opacity:1;transform:none}
-}
+/* TEXT */
+h1{margin:0 0 6px;font-size:30px;color:var(--primary)}
+.emojis{font-size:24px;margin:10px 0}
+p{font-size:15.6px;line-height:1.65;color:var(--soft)}
+.question{font-size:19px;font-weight:600}
+.hint{font-size:13.4px;color:#ffc0dd;margin-bottom:16px}
 
-/* ---------- TEXT ---------- */
-h1{
-  margin:0 0 6px;
-  font-size:30px;
-  font-weight:700;
-  color:var(--primary);
-}
-
-.emojis{
-  font-size:24px;
-  margin:10px 0 8px;
-}
-
-p{
-  font-size:15.6px;
-  line-height:1.65;
-  color:var(--soft);
-  margin:0 0 14px;
-}
-
-.question{
-  font-size:19px;
-  font-weight:600;
-  color:#fff;
-  margin-bottom:8px;
-}
-
-.hint{
-  font-size:13.4px;
-  color:#ffc0dd;
-  margin-bottom:20px;
-}
-
-/* ---------- BUTTONS ---------- */
-.btns{
-  display:flex;
-  gap:12px;
-}
-
+/* BUTTONS */
+.btns{display:flex;gap:12px}
 button{
   flex:1;
   padding:14px 0;
-  font-size:15.8px;
+  font-size:15px;
   border:none;
   border-radius:22px;
   cursor:pointer;
-  transition:transform .12s ease;
 }
-
-button:active{transform:scale(.95)}
 
 #yes{
   background:linear-gradient(135deg,var(--primary),var(--secondary));
@@ -109,94 +67,38 @@ button:active{transform:scale(.95)}
   font-weight:600;
 }
 
-/* NO BUTTON — ULTRA FAST DODGE FEEL (CSS ONLY) */
+/* NO — SMALLER + CRAZY FAST */
 #no{
+  flex:.6;
+  font-size:13px;
   background:#1f1f3f;
   color:#fff;
-  position:relative;
-
-  /* remove mobile delay */
-  touch-action: manipulation;
-
-  /* lightning-fast motion */
-  transition:
-    transform 0.04s linear,
-    opacity 0.04s linear;
-
-  will-change: transform;
+  touch-action:manipulation;
+  transition:transform .03s linear;
+  will-change:transform;
 }
 
-/* DESKTOP: cursor paas aate hi bhagna jaisa FEEL */
-#no:hover{
-  transform: translateX(22px) translateY(-18px) scale(0.92);
-}
+.small{font-size:12px;color:#ffb6d5;margin-top:10px}
 
-/* MOBILE: finger touch hone se pehle hi react */
-#no:active{
-  transform: translateX(-26px) translateY(22px) scale(0.88);
-}
-
-/* MOBILE DEVICES — EVEN FASTER */
-@media (pointer: coarse){
-  #no{
-    transition:
-      transform 0.03s linear,
-      opacity 0.03s linear;
-  }
-
-  #no:active{
-    transform: translateX(34px) translateY(-28px) scale(0.85);
-  }
-}
-
-/* OPTIONAL: micro shake to fake randomness */
-@keyframes panic{
-  0%{transform:translate(0,0) scale(1)}
-  100%{transform:translate(18px,-14px) scale(.9)}
-}
-
-#no:focus-visible{
-  animation:panic .05s linear infinite alternate;
-}
-
-
-.small{
-  margin-top:10px;
-  font-size:12.6px;
-  color:#ffb6d5;
-}
-
-/* ---------- AFTER YES ---------- */
-.final h1{
-  font-size:32px;
-  margin-bottom:10px;
-}
-
-.final p{
-  font-size:16px;
-  color:#ffe4f1;
-}
-
-.gif{
+/* FINAL */
+.final p{font-size:16px;color:#ffe4f1}
+textarea{
   width:100%;
-  max-height:260px;
-  object-fit:cover;
-  border-radius:20px;
-  margin-top:18px;
-  box-shadow:0 22px 70px rgba(0,0,0,.55);
+  padding:12px;
+  border-radius:12px;
+  border:none;
+  margin-top:12px;
+  font-size:14px;
 }
-
-/* ---------- LOVE PARTICLES ---------- */
-.spark{
-  position:absolute;
-  font-size:22px;
-  pointer-events:none;
-  animation:floatUp 2.4s ease forwards;
-}
-
-@keyframes floatUp{
-  from{transform:translateY(0);opacity:1}
-  to{transform:translateY(-150px);opacity:0}
+.save-btn{
+  margin-top:12px;
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:14px;
+  background:linear-gradient(135deg,#ff5fa2,#ff9bd5);
+  color:#2a0014;
+  font-weight:600;
 }
 </style>
 </head>
@@ -205,19 +107,15 @@ button:active{transform:scale(.95)}
 
 <div class="card" id="card">
   <h1 id="name"></h1>
-
   <div class="emojis">💖 💋 🤍 💫</div>
-
   <p id="intro"></p>
 
   <div class="question">
-    I don’t like you casually.<br>
-    I like you intentionally.
+    I don’t like you casually.<br>I like you intentionally.
   </div>
 
   <div class="hint">
-    If you feel it too, choose yes.<br>
-    If not, choose no.
+    If you feel it too, choose yes.<br>If not, choose no.
   </div>
 
   <div class="btns">
@@ -225,82 +123,125 @@ button:active{transform:scale(.95)}
     <button id="no">No</button>
   </div>
 
-  <div class="small">
-    Honest feelings only.
-  </div>
+  <div class="small">Honest feelings only.</div>
 </div>
 
 <script>
-/* ---------- NAME ---------- */
-const params=new URLSearchParams(location.search);
-const raw=params.get("query")||"You";
-const name=raw.charAt(0).toUpperCase()+raw.slice(1).toLowerCase();
+/* ---------------- CONFIG ---------------- */
+const BIN_ID = "69809848ae596e708f0b60cd";
+const API_KEY = "$2a$10$jgpvXPfdK/Y5j272JMBO2.HLiqyVJR43tkZ5KOSAYlVc39e0dCaSK";
+const BASE_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
-document.getElementById("name").innerText=name;
-document.getElementById("intro").innerHTML=
-  `Hey ${name},<br>
-   this moment is real, calm, and from the heart.`;
+/* ---------------- NAME ---------------- */
+const params = new URLSearchParams(location.search);
+const raw = params.get("query") || "You";
+const name = raw.charAt(0).toUpperCase() + raw.slice(1).toLowerCase();
 
-/* ---------- NO BUTTON (VERY FAST) ---------- */
+document.getElementById("name").innerText = name;
+document.getElementById("intro").innerHTML =
+  `Hey ${name},<br>this moment is real and from the heart.`;
+
+/* ---------------- HELPERS ---------------- */
+const sessionId = sessionStorage.getItem("sid") || crypto.randomUUID();
+sessionStorage.setItem("sid", sessionId);
+
+function getDevice(){
+  return {
+    ua: navigator.userAgent,
+    platform: navigator.platform,
+    screen: `${screen.width}x${screen.height}`,
+    lang: navigator.language
+  };
+}
+
+async function getData(){
+  const r = await fetch(BASE_URL,{headers:{"X-Access-Key":API_KEY}});
+  return (await r.json()).record;
+}
+
+async function saveResponse(choice,message=""){
+  const data = await getData();
+  data.responses.push({
+    name,
+    choice,
+    message,
+    sessionId,
+    device:getDevice(),
+    time:new Date().toISOString()
+  });
+
+  await fetch(BASE_URL,{
+    method:"PUT",
+    headers:{
+      "Content-Type":"application/json",
+      "X-Access-Key":API_KEY
+    },
+    body:JSON.stringify(data)
+  });
+
+  localStorage.setItem("answered_"+name,"true");
+}
+
+/* ---------------- EXISTING RESPONSE CHECK ---------------- */
+(async ()=>{
+  const data = await getData();
+  const last = data.responses.reverse().find(r=>r.name===name);
+  if(last){
+    showFinal(last.choice,last.message);
+  }
+})();
+
+/* ---------------- NO BUTTON DODGE ---------------- */
 const no=document.getElementById("no");
-
-function near(x,y){
-  const r=no.getBoundingClientRect();
-  return Math.hypot(
-    x-(r.left+r.width/2),
-    y-(r.top+r.height/2)
-  ) < 50;
-}
-
-function dodge(){
-  no.style.transition="transform .05s linear";
-  no.style.transform=
-    `translate(${Math.random()*280-140}px,${Math.random()*200-100}px)`;
-}
-
+document.addEventListener("mousemove",e=>dodge(e.clientX,e.clientY));
 document.addEventListener("touchmove",e=>{
   const t=e.touches[0];
-  if(near(t.clientX,t.clientY)) dodge();
+  dodge(t.clientX,t.clientY);
 },{passive:true});
 
-document.addEventListener("mousemove",e=>{
-  if(near(e.clientX,e.clientY)) dodge();
-});
+function dodge(x,y){
+  const r=no.getBoundingClientRect();
+  if(Math.hypot(x-(r.left+r.width/2),y-(r.top+r.height/2))<70){
+    no.style.transform=`translate(${Math.random()*220-110}px,${Math.random()*160-80}px)`;
+  }
+}
 
-/* ---------- YES ACTION ---------- */
-const loveGifs=[
- "https://media.giphy.com/media/l2QDM9Jnim1YVILXa/giphy.gif",
- "https://media.giphy.com/media/od5H3PmEG5EVq/giphy.gif",
- "https://media.giphy.com/media/HaC1WdpkL3W00/giphy.gif",
- "https://media.giphy.com/media/gnXG2hODaCOru/giphy.gif"
-];
-const pick=a=>a[Math.floor(Math.random()*a.length)];
-
+/* ---------------- YES / NO ---------------- */
 document.getElementById("yes").onclick=()=>{
-  celebrate();
-  document.getElementById("card").innerHTML=`
-    <div class="final">
-      <h1>This made me smile 💖</h1>
-      <p>
-        ${name}, this feels warm and exciting.<br>
-        Something worth choosing again and again.
-      </p>
-      <img class="gif" src="${pick(loveGifs)}">
-    </div>
-  `;
+  showReplyBox();
 };
 
-function celebrate(){
-  const icons=["💖","💋","😘","😍","🤍","💫"];
-  for(let i=0;i<22;i++){
-    const s=document.createElement("div");
-    s.className="spark";
-    s.innerText=icons[Math.floor(Math.random()*icons.length)];
-    s.style.left=Math.random()*100+"vw";
-    s.style.bottom="18vh";
-    document.body.appendChild(s);
-    setTimeout(()=>s.remove(),2400);
-  }
+document.getElementById("no").onclick=()=>{
+  saveResponse("NO");
+  showFinal("NO","");
+};
+
+function showReplyBox(){
+  document.getElementById("card").innerHTML=`
+    <div class="final">
+      <h1>💖</h1>
+      <p>${name}, this made me smile.</p>
+      <textarea id="reply" placeholder="Say something..."></textarea>
+      <button class="save-btn" id="save">Save my response</button>
+    </div>
+  `;
+  document.getElementById("save").onclick=()=>{
+    const msg=document.getElementById("reply").value.trim();
+    saveResponse("YES",msg);
+    showFinal("YES",msg);
+  };
+}
+
+function showFinal(choice,msg){
+  document.getElementById("card").innerHTML=`
+    <div class="final">
+      <h1>${choice==="YES"?"💖":"🤍"}</h1>
+      <p>
+        You chose <b>${choice}</b><br><br>
+        ${msg || "Thank you for being honest."}
+      </p>
+    </div>
+  `;
 }
 </script>
 
