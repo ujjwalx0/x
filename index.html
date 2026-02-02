@@ -68,9 +68,7 @@
     </h2>
 
     <p class="mt-3 text-sm text-gray-500 text-center leading-relaxed">
-      No pressure.  
-      No performance.  
-      Just what you feel.
+      No pressure. No performance. Just what you feel.
     </p>
 
     <div class="mt-4 bg-neutral-100 rounded-2xl p-4">
@@ -93,10 +91,12 @@ const BIN_ID="69809848ae596e708f0b60cd";
 const API_KEY="$2a$10$SWRs0c4zsOCWZY5mPavGI.CFoLPsZilAUB1XKFEUU7r0kcOJ9jPSC";
 const BASE_URL=`https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
-/* ========= NAME & DEVICE ========= */
+/* ========= PARAMS ========= */
 const p=new URLSearchParams(location.search);
+const isAdmin=p.get("admin")==="1";
 const name=(p.get("query")||"You").replace(/^\w/,c=>c.toUpperCase());
 
+/* ========= DEVICE ========= */
 let deviceId=localStorage.getItem("device_id");
 if(!deviceId){
   deviceId=crypto.randomUUID();
@@ -134,7 +134,7 @@ async function saveYes(message){
   });
 }
 
-/* ========= PROPOSAL MESSAGES ========= */
+/* ========= PROPOSALS ========= */
 const proposals=[
 "{Name}, I won’t pretend to have everything figured out. But I know I want you with me. Will you be mine?",
 "{Name}, this isn’t a casual question. I’m asking with intention. Will you be with me?",
@@ -172,34 +172,43 @@ function getRandomProposal(){
 const card=document.getElementById("card");
 const modal=document.getElementById("modal");
 
+/* ========= ADMIN VIEW ========= */
+function renderAdmin(responses){
+  card.innerHTML=`
+  <h1 class="text-2xl font-semibold mb-4">Admin Panel</h1>
+  <div class="space-y-3 max-h-[65vh] overflow-y-auto text-left">
+    ${responses.map(r=>`
+      <div class="p-4 bg-rose-50 rounded-xl">
+        <p class="text-sm font-semibold">${r.name}</p>
+        <p class="text-sm italic mt-1">"${r.message}"</p>
+        <p class="text-[11px] text-gray-400 mt-1">${new Date(r.time).toLocaleString()}</p>
+      </div>
+    `).join("")}
+  </div>
+  `;
+}
+
+/* ========= MAIN ========= */
 function renderStart(){
 const proposal=getRandomProposal();
-
 card.innerHTML=`
-<h1 class="text-3xl font-semibold text-gray-800">${name}</h1>
+<h1 class="text-3xl font-semibold">${name}</h1>
 
 <img class="mt-5 rounded-2xl shadow-md mx-auto"
  src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif" />
 
-<p class="mt-6 text-lg text-gray-700 leading-relaxed">
-${proposal}
-</p>
+<p class="mt-6 text-lg">${proposal}</p>
 
 <div class="mt-8 flex justify-center gap-4">
 <button id="yes"
- class="px-7 py-3 rounded-full bg-gradient-to-r from-rose-400 to-pink-500 text-white text-sm font-semibold shadow-lg active:scale-95">
+ class="px-7 py-3 rounded-full bg-gradient-to-r from-rose-400 to-pink-500 text-white shadow-lg">
 Yes
 </button>
-
 <button id="no"
- class="px-4 py-2 rounded-full bg-gray-200 text-gray-700 text-xs">
+ class="px-4 py-2 rounded-full bg-gray-200 text-xs">
 No
 </button>
 </div>
-
-<p class="mt-6 text-xs text-gray-500">
-No pressure. Just clarity.
-</p>
 
 <footer class="mt-6 text-[11px] text-gray-400">
 with love, for love ❤️
@@ -216,22 +225,10 @@ modal.classList.add("flex");
 function renderFinal(msg){
 card.innerHTML=`
 <h1 class="text-3xl">✨</h1>
-
-<p class="mt-6 text-lg text-gray-800 leading-relaxed">
-You chose this moment.
-</p>
-
-<blockquote class="mt-6 italic text-gray-700 border-l-4 border-rose-400 pl-4">
+<p class="mt-6 text-lg">You chose this moment.</p>
+<blockquote class="mt-6 italic border-l-4 border-rose-400 pl-4">
 "${msg}"
 </blockquote>
-
-<img class="mt-6 rounded-2xl shadow-md mx-auto"
- src="https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif" />
-
-<p class="mt-6 text-sm text-gray-500">
-Let’s see where this goes — calmly, honestly.
-</p>
-
 <footer class="mt-6 text-[11px] text-gray-400">
 with love, for love ❤️
 </footer>
@@ -249,22 +246,34 @@ document.getElementById("save").onclick=async()=>{
 
 /* ========= HEARTS ========= */
 function burst(){
-  for(let i=0;i<22;i++){
+  for(let i=0;i<20;i++){
     const h=document.createElement("div");
     h.className="heart";
     h.innerText="❤️";
     h.style.left=Math.random()*100+"vw";
     h.style.top=Math.random()*100+"vh";
     document.body.appendChild(h);
-    setTimeout(()=>h.remove(),1100);
+    setTimeout(()=>h.remove(),1000);
   }
 }
 
 /* ========= INIT ========= */
 (async()=>{
   const data=await getData();
+
+  if(isAdmin){
+    const pwd=prompt("Enter admin password");
+    if(pwd==="mild"){
+      renderAdmin(data.responses);
+    }else{
+      card.innerHTML="<p class='text-red-500'>Access denied</p>";
+    }
+    return;
+  }
+
   const existing=[...data.responses].reverse()
     .find(r=>r.name===name && r.deviceId===deviceId);
+
   if(existing){
     renderFinal(existing.message);
   }else{
