@@ -23,18 +23,6 @@ body{
   padding:16px;
 }
 
-.emoji{
-  position:absolute;
-  font-size:22px;
-  animation:float 6s linear infinite;
-  pointer-events:none;
-}
-
-@keyframes float{
-  from{transform:translateY(110vh);opacity:1}
-  to{transform:translateY(-10vh);opacity:0}
-}
-
 .card{
   width:100%;
   max-width:420px;
@@ -45,12 +33,6 @@ body{
   box-shadow:0 40px 110px rgba(0,0,0,.55);
   color:#fff;
   text-align:center;
-  animation:pop .7s ease;
-}
-
-@keyframes pop{
-  from{transform:scale(.9);opacity:0}
-  to{transform:scale(1);opacity:1}
 }
 
 h1{
@@ -62,11 +44,7 @@ h1{
   color:transparent;
 }
 
-p{
-  font-size:16.5px;
-  line-height:1.65;
-  opacity:.95;
-}
+p{font-size:16.5px;line-height:1.6}
 
 .hero-gif{
   width:100%;
@@ -75,7 +53,6 @@ p{
 }
 
 .question{
-  margin:18px 0 6px;
   font-size:21px;
   font-weight:600;
 }
@@ -99,15 +76,11 @@ button{
   border:none;
   border-radius:22px;
   cursor:pointer;
-  transition:.15s ease;
 }
-
-button:active{transform:scale(.94)}
 
 #yes{
   background:linear-gradient(135deg,#ff3b7f,#ff92d0);
   color:#fff;
-  box-shadow:0 16px 40px rgba(255,59,127,.55);
 }
 
 #no{
@@ -115,35 +88,26 @@ button:active{transform:scale(.94)}
   color:#fff;
   position:relative;
 }
-
-.final h1{font-size:46px}
-.final p{font-size:18px}
-
-.gif{
-  width:100%;
-  border-radius:18px;
-  margin-top:20px;
-}
 </style>
 </head>
 
 <body>
 
 <div class="card" id="card">
-  <h1 id="name">You</h1>
+  <h1 id="name"></h1>
 
   <p id="intro"></p>
 
   <img class="hero-gif"
-    src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif"
-    alt="romantic vibe">
+    src="https://media.giphy.com/media/xUPGcguWZHRC2HyBRS/giphy.gif"
+    alt="romantic hug">
 
   <div class="question">
     Would you like to turn this moment into something meaningful?
   </div>
 
   <div class="subline">
-    Some choices are simple… yet they change everything ✨
+    Some choices feel small, but change everything ✨
   </div>
 
   <div class="btns">
@@ -153,63 +117,58 @@ button:active{transform:scale(.94)}
 </div>
 
 <script>
-/* ===== NAME FROM URL PATH ===== */
-const pathName = decodeURIComponent(
-  window.location.pathname.split("/x/").filter(Boolean).pop() || "You"
-);
+/* ===== NAME FROM QUERY PARAM (CORRECT) ===== */
+const params = new URLSearchParams(window.location.search);
+const rawName = params.get("name") || "You";
 
 const cleanName =
-  pathName.charAt(0).toUpperCase() + pathName.slice(1).toLowerCase();
+  rawName.charAt(0).toUpperCase() + rawName.slice(1).toLowerCase();
 
 document.getElementById("name").innerText = cleanName;
 document.getElementById("intro").innerHTML =
-  `Hey ${cleanName},<br>this little corner of the internet is made just for you 💖`;
+  `Hey ${cleanName},<br>this little page is made just for you 💖`;
 
-/* ===== NO BUTTON SUPER FAST RUN ===== */
+/* ===== NO BUTTON RUNS ONLY WHEN CLOSE ===== */
 const noBtn = document.getElementById("no");
-const yesBtn = document.getElementById("yes");
-const card = document.getElementById("card");
 
-function runAway(){
-  const x = Math.random()*420 - 210;
-  const y = Math.random()*280 - 140;
-  noBtn.style.transform = `translate(${x}px,${y}px)`;
+function distance(a,b,c,d){
+  return Math.hypot(a-c,b-d);
 }
 
-["mouseenter","mousemove","touchstart","wheel","scroll"].forEach(evt=>{
-  window.addEventListener(evt, runAway, { passive:true });
+function checkProximity(x,y){
+  const r = noBtn.getBoundingClientRect();
+  const bx = r.left + r.width/2;
+  const by = r.top + r.height/2;
+
+  if(distance(x,y,bx,by) < 90){
+    const nx = Math.random()*260 - 130;
+    const ny = Math.random()*180 - 90;
+    noBtn.style.transform = `translate(${nx}px,${ny}px)`;
+  }
+}
+
+document.addEventListener("mousemove", e=>{
+  checkProximity(e.clientX,e.clientY);
+});
+
+document.addEventListener("touchmove", e=>{
+  const t = e.touches[0];
+  checkProximity(t.clientX,t.clientY);
 });
 
 /* ===== YES CLICK ===== */
-yesBtn.addEventListener("click", ()=>{
-  card.innerHTML = `
-    <div class="final">
-      <h1>💖</h1>
-      <p>
-        ${cleanName},<br><br>
-        This smile… this feeling…<br>
-        you just created something beautiful ✨<br><br>
-        Let’s see where this goes 💫
-      </p>
-
-      <img class="gif"
-        src="https://media.giphy.com/media/3oriO6qJiXajN0TyDu/giphy.gif"
-        alt="celebration love">
-    </div>
+document.getElementById("yes").onclick = ()=>{
+  document.getElementById("card").innerHTML = `
+    <h1>🤗</h1>
+    <p style="font-size:18px">
+      ${cleanName},<br><br>
+      this hug is just for you 💖<br>
+      you made this moment special ✨
+    </p>
+    <img class="hero-gif"
+      src="https://media.giphy.com/media/l2QDM9Jnim1YVILXa/giphy.gif">
   `;
-});
-
-/* ===== FLOATING EMOJIS ===== */
-const emojis = ["💖","✨","💘","😍","💫"];
-setInterval(()=>{
-  const e=document.createElement("div");
-  e.className="emoji";
-  e.innerText=emojis[Math.floor(Math.random()*emojis.length)];
-  e.style.left=Math.random()*100+"vw";
-  e.style.animationDuration=3+Math.random()*3+"s";
-  document.body.appendChild(e);
-  setTimeout(()=>e.remove(),7000);
-},360);
+};
 </script>
 
 </body>
