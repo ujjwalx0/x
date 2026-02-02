@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Just For You 💖</title>
+<title>For You 💖</title>
 
 <style>
 *{box-sizing:border-box}
@@ -14,11 +14,11 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  font-family: "Poppins", system-ui;
+  font-family:"Poppins",system-ui;
   background:
-    radial-gradient(circle at top, #ff5fa2, transparent 40%),
-    radial-gradient(circle at bottom, #7f00ff, transparent 45%),
-    #0d0d16;
+    radial-gradient(circle at top left,#ff4f9a,transparent 40%),
+    radial-gradient(circle at bottom right,#7b2cff,transparent 45%),
+    #0b0b14;
   overflow:hidden;
   padding:16px;
 }
@@ -38,12 +38,12 @@ body{
 
 .card{
   width:100%;
-  max-width:380px;
-  padding:28px 24px 32px;
-  border-radius:26px;
+  max-width:390px;
+  padding:30px 24px 34px;
+  border-radius:28px;
   background:rgba(255,255,255,0.12);
-  backdrop-filter:blur(16px);
-  box-shadow:0 30px 80px rgba(0,0,0,0.4);
+  backdrop-filter:blur(18px);
+  box-shadow:0 35px 90px rgba(0,0,0,.45);
   color:#fff;
   text-align:center;
   animation:pop .7s ease;
@@ -55,23 +55,23 @@ body{
 }
 
 h1{
-  margin:0 0 12px;
-  font-size:30px;
+  margin:0 0 14px;
+  font-size:32px;
   font-weight:700;
-  background:linear-gradient(135deg,#ff9bd5,#fff);
+  background:linear-gradient(135deg,#ff9bd5,#ffffff);
   -webkit-background-clip:text;
   color:transparent;
 }
 
 p{
-  font-size:16px;
-  line-height:1.6;
+  font-size:16.5px;
+  line-height:1.65;
   opacity:.95;
 }
 
 .question{
   margin:26px 0;
-  font-size:18px;
+  font-size:19px;
   font-weight:600;
 }
 
@@ -82,10 +82,10 @@ p{
 
 button{
   flex:1;
-  padding:14px 0;
+  padding:15px 0;
   font-size:17px;
   border:none;
-  border-radius:18px;
+  border-radius:20px;
   cursor:pointer;
   transition:.15s ease;
 }
@@ -93,9 +93,9 @@ button{
 button:active{transform:scale(.94)}
 
 #yes{
-  background:linear-gradient(135deg,#ff3d81,#ff8fd1);
+  background:linear-gradient(135deg,#ff3b7f,#ff92d0);
   color:#fff;
-  box-shadow:0 12px 30px rgba(255,61,129,.5);
+  box-shadow:0 14px 35px rgba(255,59,127,.5);
 }
 
 #no{
@@ -105,7 +105,7 @@ button:active{transform:scale(.94)}
 }
 
 .final h1{
-  font-size:42px;
+  font-size:44px;
 }
 
 .final p{
@@ -117,15 +117,15 @@ button:active{transform:scale(.94)}
 <body>
 
 <div class="card" id="card">
-  <h1 id="name">You</h1>
+  <h1 id="name">Nilisha</h1>
 
   <p>
-    Jab tum paas hoti ho,<br>
-    duniya thodi zyada hi achhi lagti hai ✨
+    When you are around,<br>
+    everything feels calmer and more real ✨
   </p>
 
   <div class="question">
-    Kya tum mere saath chalogi? 💫
+    Would you like to be with me? 💫
   </div>
 
   <div class="btns">
@@ -135,53 +135,51 @@ button:active{transform:scale(.94)}
 </div>
 
 <script>
-/* ========= DATA OBJECT ========= */
+/* ===== DATA ARRAY (ONLY NILISHA) ===== */
 const girls = {
-  ns: { name: "Nilisha" },
-  ap: { name: "Aarohi" },
-  kv: { name: "Kavya" },
-  sn: { name: "Sneha" }
+  ns: { name: "Nilisha" }
 };
 
-/* ========= URL NAME LOAD ========= */
+/* ===== URL NAME LOAD ===== */
 const params = new URLSearchParams(window.location.search);
 const key = params.get("k");
-const girlName = girls[key]?.name || "Someone Special";
+const girlName = girls[key]?.name || "Nilisha";
 document.getElementById("name").innerText = girlName;
 
-/* ========= BUTTON LOGIC ========= */
+/* ===== NO BUTTON RUN AWAY ===== */
 const noBtn = document.getElementById("no");
 const yesBtn = document.getElementById("yes");
 const card = document.getElementById("card");
 
 function runAway(){
-  const x = Math.random()*240 - 120;
-  const y = Math.random()*160 - 80;
+  const x = Math.random()*260 - 130;
+  const y = Math.random()*180 - 90;
   noBtn.style.transform = `translate(${x}px,${y}px)`;
 }
 
 noBtn.addEventListener("mouseenter", runAway);
 noBtn.addEventListener("touchstart", runAway);
 
+/* ===== YES CLICK ===== */
 yesBtn.addEventListener("click", ()=>{
   card.innerHTML = `
     <div class="final">
       <h1>💖</h1>
       <p>
-        ${girlName},<br><br>
-        tumhara YES mere liye sabse cute moment hai 😭✨<br><br>
-        Ab toh yeh kahani shuru ho chuki hai 💫
+        Nilisha,<br><br>
+        Your yes means more than you know 😭✨<br><br>
+        This is the start of something beautiful 💫
       </p>
     </div>
   `;
 });
 
-/* ========= FLOATING EMOJIS ========= */
+/* ===== FLOATING EMOJIS ===== */
 const emojis = ["💖","✨","💘","😍","💫"];
 setInterval(()=>{
-  const e = document.createElement("div");
+  const e=document.createElement("div");
   e.className="emoji";
-  e.innerText = emojis[Math.floor(Math.random()*emojis.length)];
+  e.innerText=emojis[Math.floor(Math.random()*emojis.length)];
   e.style.left=Math.random()*100+"vw";
   e.style.animationDuration=4+Math.random()*4+"s";
   document.body.appendChild(e);
